@@ -1,0 +1,44 @@
+# Begin SUDO standard template Date 2018-15-05  
+#
+#
+# Version control
+# May 2018 V 1.0.0
+#   Initial release as stand alone template for zenoss_user
+#------------------------------------------------------------------------------
+
+#==============================================================================
+# User Aliases
+#==============================================================================
+# Replace sample group names with real group names for your account.
+#
+#
+User_Alias      SNOW = snow_user
+#
+#==============================================================================
+# Host Aliases
+#==============================================================================
+#Host_Alias      IBM_SA_HOSTS = ALL
+#
+# Use ALL or indicate
+# indicate subsets as appropriate.
+#
+#==============================================================================
+# command Alias - sample
+#==============================================================================
+#
+# NOTE This Cmnd_Alias can only be used if secondary logging are in place
+#   on the server.
+#
+Cmnd_Alias SNOW_CMNDS = \
+/usr/sbin/dmidecode, \
+/usr/sbin/lsof, \
+/usr/bin/fdisk -l, \
+/usr/bin/dmsetup table, \
+/usr/bin/dmsetup ls, \
+/sbin/multipath, \
+/usr/sbin/vxdmpadm
+
+SNOW ALL=(root) NOPASSWD:SNOW_CMNDS, NOEXEC:IBM_SHELLESCAPE_ALL,!IBM_NONE_EDITOR
+
+#
+# End SUDO standard template Date 2018-15-05

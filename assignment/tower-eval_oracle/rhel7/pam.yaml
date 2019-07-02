@@ -1,0 +1,24 @@
+---
+#******************************************************************************
+- name: Enable pwquality for root
+  lineinfile:
+      dest: "{{ item }}"
+      regexp: "pam_pwquality.so"
+      line: "password    requisite     pam_pwquality.so try_first_pass enforce_for_root retry=3 authtok_type="
+      state: present
+  with_items:
+    - /etc/pam.d/system-auth
+    - /etc/pam.d/password-auth
+
+- name: Get pam file list
+  shell: ls -l /etc/pam.d
+  register: pam_list
+  changed_when: false
+
+- name: disable rhosts
+  lineinfile:
+    dest: "{{ item }}"
+    regexp: "rhosts_auth"
+    state: absent
+  with_items:
+    - "{{ pam_list.stdout }}"

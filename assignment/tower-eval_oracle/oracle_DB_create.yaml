@@ -1,0 +1,25 @@
+---
+- name: Asm creation play
+  hosts: oracle
+  tasks:
+    - name: dbca2.rsp file copy
+      template:
+        src: oracle/dbca2.rsp.j2
+        dest: /u02/app/oracle/product/12.1.0/dbhome_1/assistants/dbca/dbca.rsp 
+        owner: oracle
+        group: oinstall
+        mode: 0644
+        backup: yes 
+
+    - name: General purpose file copy
+      copy:
+        src: "files/General_Purpose.dbc"
+        dest: /u02/app/oracle/product/12.1.0/dbhome_1/assistants/dbca/templates/General_Purpose.dbc
+        owner: oracle
+        group: oinstall
+        mode: 0644
+        backup: yes
+
+    - name: execute dbca silent
+      shell: "{{ DB_ORACLE_HOME }}/bin/dbca -silent -responsefile {{ DB_ORACLE_HOME }}/assistants/dbca/dbca.rsp"
+

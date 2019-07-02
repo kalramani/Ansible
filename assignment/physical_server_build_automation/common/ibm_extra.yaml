@@ -1,0 +1,80 @@
+---
+- name: change grub.cfg perm
+  file:
+    path: "{{ item }}"
+    mode: 0600
+    owner: root
+    group: root
+  with_items:
+    - /boot/grub2/grub.cfg
+    - /var/log/boot.log
+
+- name: sudo template push
+  copy:
+    src: hardening/sudoers_temp/{{ item }}
+    dest: /etc/sudoers.d/{{ item }}
+    owner: root
+    group: root
+    mode: 0440
+  with_items:
+    - 010_STD_SA_GLB
+    - 010_STD_ALIAS_GLB
+    - 010_STD_NEG_GLB
+    - 401_UNIXL1_ISA_AIRTEL_LCL
+    - 402_UNIXL2_ISA_AIRTEL_LCL
+    - 403_BKPL1_ISA_AIRETL_LCL
+    - 404_STRGL1_ISA_AIRETL_LCL
+    - 405_STRGL2_ISA_AIRETL_LCL
+    - 409_OTHERS_ISA_AIRTEL_LCL
+    - 410_FULL_SUDO_ISA_AIRTEL_LCL
+    - 445_NETBACKUP_ISA_AIRTEL_ADJ
+    - 450_TELEGRAPH_ISA_AIRTEL_LCL
+    - 451_SNOW_USER_AIRTEL_LCL
+
+- name: sudo config file
+  copy:
+    src: hardening/sudoers
+    dest: /etc/sudoers
+    owner: root
+    group: root
+    mode: 0440
+
+- name: changing umask in cshrc
+  copy:
+    src: common/mask.csh
+    dest: /etc/profile.d/mask.csh
+    owner: root
+    group: root
+    mode: 0644
+
+- name: changing in profile and bashrc
+  lineinfile:
+    path: "{{ item }}"
+    regexp: 'umask 022'
+    line: '    umask 027'
+    state: present
+  with_items:
+    - /etc/profile
+    - /etc/bashrc
+    - /etc/csh.login
+    - /etc/csh.cshrc
+
+- name: changing in profile and bashrc
+  lineinfile:
+    path: "{{ item }}"
+    regexp: 'umask 002'
+    line: '      umask 027'
+    state: present
+  with_items:
+    - /etc/profile
+    - /etc/bashrc
+
+#- name: Copy the ssh config file standard
+#  copy:
+#    src: sshd_config_static
+#    dest: /etc/ssh/sshd_config
+#    owner: root
+#    group: root
+#    mode: 0600
+#    backup: yes
+#    backup_file: /etc/ssh/ssd_config_{{ ansible_date_time.date }}_{{ ansible_date_time.time }}

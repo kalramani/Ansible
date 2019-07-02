@@ -1,0 +1,13 @@
+---
+- name: Add User  "{{ item }}"
+  user: name="{{ item }}" state=present password="{{ snow_user_password }}" 
+  with_items:
+    - snow_user
+
+#- name: Update sudo rules for snow_user
+#  template: 
+#     dest: '/etc/sudoers.d/servicenow'
+#     src: hardening/common/servicenow
+#     owner: root
+#     group: root
+#     mode: 0440

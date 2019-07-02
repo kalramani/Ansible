@@ -1,0 +1,16 @@
+---
+- name: Build Wait before starting post install
+  hosts: tower 
+  gather_facts: no
+  tasks:
+    - name: adding host to inventory
+      add_host:
+        name: "{{ IPADDR }}"
+        group: provision_grp
+    - name: wait for server to finish OS deployment
+      wait_for:
+        host: "{{ IPADDR }}"
+        port: 22
+        state: started
+        delay: 60
+        timeout: 2100

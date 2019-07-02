@@ -1,0 +1,775 @@
+# Begin  NA NetBackup standard template Ver 1.1   Date 2016-09-20  #
+# Description : BACKUP_L3_ADMINISTRATOR   USER_ID : cyadmbkp
+#
+# Software products and versions
+# Supported OS platforms
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control (note: version number indicated will be chosen to
+# align with the corresponding global 'paired' template)
+#------------------------------------------------------------------------
+# v1.0 - rybczyk@us.ibm.com - initial NA version
+# v1.1 - rybczyk@us.ibm.com - update comments, and +added or -removed:
+#  +    sudoedit /usr/openv/netbackup/*.conf, \
+#  -    sudoedit /usr/openv/netbackup/bp.conf, \ 
+#  +    /usr/bin/rm /usr/openv/logs/*, \
+#  +    /usr/bin/rm /usr/openv/netbackup/logs/*, \ 
+#  +    !/usr/bin/rm *[\:space\:]/* *,   !/usr/bin/rm *./*,   !/usr/bin/rm *..*, \
+# v1.2 add mkdir standard negation.
+# v1.3 rybczyk@us.ibm.com +added
+#  +    /usr/openv/netbackup/bin/nbunquiescence, \
+#  +    /usr/openv/netbackup/bin/nbvault,  \
+#  +    /usr/openv/netbackup/bin/ndmpagent, \
+#  +    /usr/openv/netbackup/bin/oracle_link, \
+#  +    /usr/openv/netbackup/bin/version, \
+#  +    /usr/openv/netbackup/bin/vltadm, \
+#  +    /usr/openv/netbackup/bin/vltcontainers, \
+#  +    /usr/openv/netbackup/bin/vlteject, \
+#  +    /usr/openv/netbackup/bin/vltinject, \
+#  +    /usr/openv/netbackup/bin/vltoffsitemedia, \
+#  +    /usr/openv/netbackup/bin/vltopmenu, \
+#  +    /usr/openv/netbackup/bin/vltrun, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbdeployutil, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbfindfile, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbhardwaremon, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbholdutil, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbindexutil,  \
+#  +    /usr/openv/netbackup/bin/admincmd/nbkmsutil, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbplupgrade, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbregopsc, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbreplicate, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbsnapimport, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbsnapreplicate, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbsvrgrp, \
+#  +    /usr/openv/netbackup/bin/admincmd/nb_updatedssu, \
+#  +    /usr/openv/netbackup/bin/admincmd/resilient_clients
+#========================================================================
+# The User_Alias name IBM_* to identify the Alias as the
+# 'application related' alias for IBM owned ID's.
+#
+User_Alias  IBM_NBU_BAU = cyadmbkp  # replace teamgroup with the
+   # -group- that contains the account specific IBM
+   # application support team ID's. 
+   # DO NOT use this group for customer owned ID's.
+#-----------------------------------------------------------------------------
+#
+#User_Alias  IBM_NBU_CHG = %<:teamgroup_cw>  # replace teamgroup_cw with the
+   # -group- that is permitted to contain the account specific IBM
+   # application support team ID's during problem / change / install windows
+   # DO NOT use this group for customer owned ID's.
+#-----------------------------------------------------------------------------
+# Host Aliases 
+#
+#Host_Alias NBU_HOSTS = ALL # In this template, we assume all
+  # systems are managed by the IBM SA team.
+  # Indicate a subset of systems if not all will be
+  # managed by the same IBM team.
+
+# Note to sudo implementation teams:  You may comment out the above and include
+# them in the 'main' sudoers file 'just above' the include statement for this
+# template: eg:
+# IBM_NBU_BAU = %<:teamgroup>
+# #include /etc/sudoers.d/202_NBU_NA 
+
+# --------------Do not change anything below this line, excepting to ----------
+# ------ modify 'OS specific' command paths to correct OSR locations ----
+
+# User Specific Defaults
+#-----[ Cmnd Alias Section ]-------#
+Cmnd_Alias IBM_NBU_BAU_CMDS = \
+	/usr/openv/netbackup/bin/add_media_server, \
+   	/usr/openv/netbackup/bin/add_media_server_on_clients, \
+   	/usr/openv/netbackup/bin/backup_exit_notify, \
+   	/usr/openv/netbackup/bin/backup_notify, \
+   	/usr/openv/netbackup/bin/bmrc, \
+   	/usr/openv/netbackup/bin/bmrsavecfg, \
+   	/usr/openv/netbackup/bin/bmrsetupclient, \
+   	/usr/openv/netbackup/bin/bp, \
+   	/usr/openv/netbackup/bin/bpadm, \
+   	/usr/openv/netbackup/bin/bparchive, \
+   	/usr/openv/netbackup/bin/bpbackup, \
+   	/usr/openv/netbackup/bin/bpbkar, \
+   	/usr/openv/netbackup/bin/bpbrm, \
+   	/usr/openv/netbackup/bin/bpbrmds, \
+   	/usr/openv/netbackup/bin/bpcd, \
+   	/usr/openv/netbackup/bin/bpclimagelist, \
+   	/usr/openv/netbackup/bin/bpclntcmd, \
+   	/usr/openv/netbackup/bin/bpclusterutil, \
+   	/usr/openv/netbackup/bin/bpcompatd, \
+   	/usr/openv/netbackup/bin/bpdbm, \
+   	/usr/openv/netbackup/bin/bpdgclone, \
+   	/usr/openv/netbackup/bin/bpdm, \
+   	/usr/openv/netbackup/bin/bpdynamicclient, \
+   	/usr/openv/netbackup/bin/bpfilter, \
+   	/usr/openv/netbackup/bin/bpfis, \
+   	/usr/openv/netbackup/bin/bpfsinfo, \
+   	/usr/openv/netbackup/bin/bphdb, \
+   	/usr/openv/netbackup/bin/bpinst, \
+   	/usr/openv/netbackup/bin/bpjava-msvc, \
+   	/usr/openv/netbackup/bin/bpjava-susvc, \
+   	/usr/openv/netbackup/bin/bpjava-usvc, \
+   	/usr/openv/netbackup/bin/bpjobd, \
+   	/usr/openv/netbackup/bin/bpkeyfile, \
+   	/usr/openv/netbackup/bin/bpkeyutil, \
+   	/usr/openv/netbackup/bin/bp.kill_all, \
+   	/usr/openv/netbackup/bin/bplist, \
+   	/usr/openv/netbackup/bin/bpmount, \
+   	/usr/openv/netbackup/bin/bpnbat, \
+   	/usr/openv/netbackup/bin/bppfi, \
+   	/usr/openv/netbackup/bin/bpps, \
+   	/usr/openv/netbackup/bin/bprd, \
+   	/usr/openv/netbackup/bin/bprestore, \
+   	/usr/openv/netbackup/bin/bp.start_all, \
+   	/usr/openv/netbackup/bin/bpsynth, \
+   	/usr/openv/netbackup/bin/bptm, \
+   	/usr/openv/netbackup/bin/bptpcinfo, \
+   	/usr/openv/netbackup/bin/bpvxver, \
+   	/usr/openv/netbackup/bin/cat_convert, \
+   	/usr/openv/netbackup/bin/dbbackup_notify, \
+   	/usr/openv/netbackup/bin/diskfull_notify, \
+   	/usr/openv/netbackup/bin/fsanalyze, \
+   	/usr/openv/netbackup/bin/fsmap, \
+   	/usr/openv/netbackup/bin/initbpdbm, \
+   	/usr/openv/netbackup/bin/initbprd, \
+   	/usr/openv/netbackup/bin/install_bp, \
+   	/usr/openv/netbackup/bin/install_client_files, \
+   	/usr/openv/netbackup/bin/install_nblu, \
+   	/usr/openv/netbackup/bin/install_snc, \
+   	/usr/openv/netbackup/bin/jbpSA, \
+   	/usr/openv/netbackup/bin/jnbSA, \
+   	/usr/openv/netbackup/bin/jobmon, \
+   	/usr/openv/netbackup/bin/merge_auth_templates, \
+   	/usr/openv/netbackup/bin/mtfrd, \
+   	/usr/openv/netbackup/bin/nbdbms_start_stop, \
+   	/usr/openv/netbackup/bin/nbemm, \
+   	/usr/openv/netbackup/bin/nbevtmgr, \
+   	/usr/openv/netbackup/bin/nbfdrv64, \
+   	/usr/openv/netbackup/bin/nbfirescan, \
+   	/usr/openv/netbackup/bin/nbfs, \
+   	/usr/openv/netbackup/bin/nbfsd, \
+   	/usr/openv/netbackup/bin/nbftadm, \
+   	/usr/openv/netbackup/bin/nbftclnt, \
+   	/usr/openv/netbackup/bin/nbftsrvr, \
+   	/usr/openv/netbackup/bin/nbgp, \
+   	/usr/openv/netbackup/bin/nbjm, \
+   	/usr/openv/netbackup/bin/nblu_registration, \
+   	/usr/openv/netbackup/bin/nbmtrans, \
+   	/usr/openv/netbackup/bin/nbpem, \
+   	/usr/openv/netbackup/bin/nbproxy, \
+   	/usr/openv/netbackup/bin/nbpushdata, \
+   	/usr/openv/netbackup/bin/nbrb, \
+   	/usr/openv/netbackup/bin/nbrmms, \
+   	/usr/openv/netbackup/bin/nbsl, \
+   	/usr/openv/netbackup/bin/nbstserv, \
+   	/usr/openv/netbackup/bin/nbsvcmon, \
+   	/usr/openv/netbackup/bin/ndmpclient, \
+   	/usr/openv/netbackup/bin/parent_end_notify, \
+   	/usr/openv/netbackup/bin/parent_start_notify, \
+   	/usr/openv/netbackup/bin/restore_notify, \
+   	/usr/openv/netbackup/bin/session_notify, \
+   	/usr/openv/netbackup/bin/session_start_notify, \
+   	/usr/openv/netbackup/bin/SPSRecoveryAsst, \
+   	/usr/openv/netbackup/bin/update_clients, \
+   	/usr/openv/netbackup/bin/update_dbclients, \
+   	/usr/openv/netbackup/bin/update_luagent, \
+   	/usr/openv/netbackup/bin/update_services, \
+   	/usr/openv/netbackup/bin/userreq_notify, \
+   	/usr/openv/netbackup/bin/vxlogcfg, \
+   	/usr/openv/netbackup/bin/vxlogmgr, \
+   	/usr/openv/netbackup/bin/vxlogview, \
+   	/usr/openv/netbackup/bin/admincmd/backupdbtrace, \
+   	/usr/openv/netbackup/bin/admincmd/backuptrace, \
+   	/usr/openv/netbackup/bin/admincmd/bpauthorize, \
+   	/usr/openv/netbackup/bin/admincmd/bpauthsync, \
+   	/usr/openv/netbackup/bin/admincmd/bpbackupdb, \
+   	/usr/openv/netbackup/bin/admincmd/bpcatarc, \
+   	/usr/openv/netbackup/bin/admincmd/bpcatlist, \
+   	/usr/openv/netbackup/bin/admincmd/bpcatres, \
+   	/usr/openv/netbackup/bin/admincmd/bpcatrm, \
+   	/usr/openv/netbackup/bin/admincmd/bpccname, \
+   	/usr/openv/netbackup/bin/admincmd/bpchangeprimary, \
+   	/usr/openv/netbackup/bin/admincmd/bpclient, \
+   	/usr/openv/netbackup/bin/admincmd/bpconfig, \
+   	/usr/openv/netbackup/bin/admincmd/bpcounts, \
+   	/usr/openv/netbackup/bin/admincmd/bpcoverage, \
+   	/usr/openv/netbackup/bin/admincmd/bpdbjobs, \
+   	/usr/openv/netbackup/bin/admincmd/bpdrfiles, \
+   	/usr/openv/netbackup/bin/admincmd/bpduplicate, \
+   	/usr/openv/netbackup/bin/admincmd/bperror, \
+   	/usr/openv/netbackup/bin/admincmd/bpexpdate, \
+   	/usr/openv/netbackup/bin/admincmd/bpflist, \
+   	/usr/openv/netbackup/bin/admincmd/bpfrag, \
+   	/usr/openv/netbackup/bin/admincmd/bpgetconfig, \
+   	/usr/openv/netbackup/bin/admincmd/bpgetdebuglog, \
+   	/usr/openv/netbackup/bin/admincmd/bpgethost, \
+   	/usr/openv/netbackup/bin/admincmd/bpgetmedia, \
+   	/usr/openv/netbackup/bin/admincmd/bpimage, \
+   	/usr/openv/netbackup/bin/admincmd/bpimagelist, \
+   	/usr/openv/netbackup/bin/admincmd/bpimmedia, \
+   	/usr/openv/netbackup/bin/admincmd/bpimport, \
+   	/usr/openv/netbackup/bin/admincmd/bplabel, \
+   	/usr/openv/netbackup/bin/admincmd/bplicense, \
+   	/usr/openv/netbackup/bin/admincmd/bplocaladdrs, \
+   	/usr/openv/netbackup/bin/admincmd/bpmedia, \
+   	/usr/openv/netbackup/bin/admincmd/bpmedialist, \
+   	/usr/openv/netbackup/bin/admincmd/bpminlicense, \
+   	/usr/openv/netbackup/bin/admincmd/bpmoverinfo, \
+   	/usr/openv/netbackup/bin/admincmd/bpnbaz, \
+   	/usr/openv/netbackup/bin/admincmd/bppficorr, \
+   	/usr/openv/netbackup/bin/admincmd/bpplcatdrinfo, \
+   	/usr/openv/netbackup/bin/admincmd/bpplclients, \
+   	/usr/openv/netbackup/bin/admincmd/bppldelete, \
+   	/usr/openv/netbackup/bin/admincmd/bpplinclude, \
+   	/usr/openv/netbackup/bin/admincmd/bpplinfo, \
+   	/usr/openv/netbackup/bin/admincmd/bppllist, \
+   	/usr/openv/netbackup/bin/admincmd/bpplsched, \
+   	/usr/openv/netbackup/bin/admincmd/bpplschedrep, \
+   	/usr/openv/netbackup/bin/admincmd/bpplschedwin, \
+   	/usr/openv/netbackup/bin/admincmd/bpplvalid, \
+   	/usr/openv/netbackup/bin/admincmd/bppolicynew, \
+   	/usr/openv/netbackup/bin/admincmd/bprdreq, \
+   	/usr/openv/netbackup/bin/admincmd/bprecover, \
+   	/usr/openv/netbackup/bin/admincmd/bpretlevel, \
+   	/usr/openv/netbackup/bin/admincmd/bprsh, \
+   	/usr/openv/netbackup/bin/admincmd/bpSALinfo, \
+   	/usr/openv/netbackup/bin/admincmd/bpschedule, \
+   	/usr/openv/netbackup/bin/admincmd/bpschedulerep, \
+   	/usr/openv/netbackup/bin/admincmd/bpsetconfig, \
+   	/usr/openv/netbackup/bin/admincmd/bpsnapconfig, \
+   	/usr/openv/netbackup/bin/admincmd/bpstsinfo, \
+   	/usr/openv/netbackup/bin/admincmd/bpstuadd, \
+   	/usr/openv/netbackup/bin/admincmd/bpstudel, \
+   	/usr/openv/netbackup/bin/admincmd/bpstulist, \
+   	/usr/openv/netbackup/bin/admincmd/bpsturep, \
+   	/usr/openv/netbackup/bin/admincmd/bpsyncinfo, \
+   	/usr/openv/netbackup/bin/admincmd/bptestbpcd, \
+   	/usr/openv/netbackup/bin/admincmd/bpuser, \
+   	/usr/openv/netbackup/bin/admincmd/bpverify, \
+   	/usr/openv/netbackup/bin/admincmd/bpversion, \
+   	/usr/openv/netbackup/bin/admincmd/bpversion_update, \
+   	/usr/openv/netbackup/bin/admincmd/duplicatetrace, \
+   	/usr/openv/netbackup/bin/admincmd/get_license_key, \
+   	/usr/openv/netbackup/bin/admincmd/importtrace, \
+   	/usr/openv/netbackup/bin/admincmd/nbdc, \
+   	/usr/openv/netbackup/bin/admincmd/nbdelete, \
+   	/usr/openv/netbackup/bin/admincmd/nbdevconfig, \
+   	/usr/openv/netbackup/bin/admincmd/nbdevquery, \
+   	/usr/openv/netbackup/bin/admincmd/nbemmcmd, \
+   	/usr/openv/netbackup/bin/admincmd/nbexecute, \
+   	/usr/openv/netbackup/bin/admincmd/nbftconfig, \
+   	/usr/openv/netbackup/bin/admincmd/nbftsrv_config, \
+   	/usr/openv/netbackup/bin/admincmd/nbhba, \
+   	/usr/openv/netbackup/bin/admincmd/nbjmreq, \
+   	/usr/openv/netbackup/bin/admincmd/nbpemreq, \
+   	/usr/openv/netbackup/bin/admincmd/nbproxyreq, \
+   	/usr/openv/netbackup/bin/admincmd/nbrbutil, \
+   	/usr/openv/netbackup/bin/admincmd/nbshareddisk, \
+   	/usr/openv/netbackup/bin/admincmd/nbstl, \
+   	/usr/openv/netbackup/bin/admincmd/nbstlutil, \
+   	/usr/openv/netbackup/bin/admincmd/nbsvrgrp, \
+   	/usr/openv/netbackup/bin/admincmd/nb_updatedssu, \
+   	/usr/openv/netbackup/bin/admincmd/restoretrace, \
+   	/usr/openv/netbackup/bin/admincmd/verifytrace, \
+   	/usr/openv/netbackup/bin/goodies/available_media, \
+   	/usr/openv/netbackup/bin/goodies/available_media.DF, \
+   	/usr/openv/netbackup/bin/goodies/available_media.DF.allscratch, \
+   	/usr/openv/netbackup/bin/goodies/available_media.DF.bak, \
+   	/usr/openv/netbackup/bin/goodies/available_media.LG, \
+   	/usr/openv/netbackup/bin/goodies/available_media.LG.allscratch, \
+   	/usr/openv/netbackup/bin/goodies/available_media.LG.bak, \
+   	/usr/openv/netbackup/bin/goodies/available_media.LQ, \
+   	/usr/openv/netbackup/bin/goodies/available_media.LQ.allscratch, \
+   	/usr/openv/netbackup/bin/goodies/available_media.LQ.bak, \
+   	/usr/openv/netbackup/bin/goodies/available_media.NI, \
+   	/usr/openv/netbackup/bin/goodies/available_media.NP, \
+   	/usr/openv/netbackup/bin/goodies/available_media.PR, \
+   	/usr/openv/netbackup/bin/goodies/available_media.RL, \
+   	/usr/openv/netbackup/bin/goodies/available_media.RLP, \
+   	/usr/openv/netbackup/bin/goodies/bpend_notify, \
+   	/usr/openv/netbackup/bin/goodies/bpend_notify.bat, \
+   	/usr/openv/netbackup/bin/goodies/bpend_notify_busy, \
+   	/usr/openv/netbackup/bin/goodies/bperrcode, \
+   	/usr/openv/netbackup/bin/goodies/bp.kill_all, \
+   	/usr/openv/netbackup/bin/goodies/bpplconvert, \
+   	/usr/openv/netbackup/bin/goodies/bpstart_notify, \
+   	/usr/openv/netbackup/bin/goodies/bpstart_notify.bat, \
+   	/usr/openv/netbackup/bin/goodies/check_coverage, \
+   	/usr/openv/netbackup/bin/goodies/cleanstats, \
+   	/usr/openv/netbackup/bin/goodies/db2.filelist, \
+   	/usr/openv/netbackup/bin/goodies/db_begin_bkup, \
+   	/usr/openv/netbackup/bin/goodies/db_begin_streams, \
+   	/usr/openv/netbackup/bin/goodies/db_end_bkup, \
+   	/usr/openv/netbackup/bin/goodies/db_end_streams, \
+   	/usr/openv/netbackup/bin/goodies/duplicate_images, \
+   	/usr/openv/netbackup/bin/goodies/edit_services, \
+   	/usr/openv/netbackup/bin/goodies/fimselector, \
+   	/usr/openv/netbackup/bin/goodies/lotusnotes.filelist, \
+   	/usr/openv/netbackup/bin/goodies/mail_bp_reports, \
+   	/usr/openv/netbackup/bin/goodies/media_deassign_notify, \
+   	/usr/openv/netbackup/bin/goodies/ms_exchange_200x.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_exchange.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_exchange_kms.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_exchange_mailbox.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_exchange_pub.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_exchange_srs.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_sharepoint_2003.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_sharepoint_resources.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_sharepoint_server.filelist, \
+   	/usr/openv/netbackup/bin/goodies/ms_sharepoint_ws.filelist, \
+   	/usr/openv/netbackup/bin/goodies/nbac_cron, \
+   	/usr/openv/netbackup/bin/goodies/nbac_install_helper, \
+   	/usr/openv/netbackup/bin/goodies/nbac_install_helper.pl, \
+   	/usr/openv/netbackup/bin/goodies/nbclient, \
+   	/usr/openv/netbackup/bin/goodies/nbftserver, \
+   	/usr/openv/netbackup/bin/goodies/nbstcapacity, \
+   	/usr/openv/netbackup/bin/goodies/netbackup, \
+   	/usr/openv/netbackup/bin/goodies/new_clients, \
+   	/usr/openv/netbackup/bin/goodies/oracle_rman.filelist, \
+   	/usr/openv/netbackup/bin/goodies/oracle_xml_export.filelist, \
+   	/usr/openv/netbackup/bin/goodies/pltemplates, \
+   	/usr/openv/netbackup/bin/goodies/stseventlistener, \
+   	/usr/openv/netbackup/bin/goodies/verify_images, \
+   	/usr/openv/netbackup/bin/goodies/windows2000.filelist, \
+   	/usr/openv/netbackup/bin/goodies/windows2003.filelist, \
+   	/usr/openv/netbackup/bin/goodies/support/support, \
+   	/usr/openv/netbackup/bin/goodies/support/support_nbac, \
+   	/usr/openv/netbackup/bin/goodies/support/versioninfo, \
+   	/usr/openv/netbackup/bin/ibm/jobmon.pl, \
+   	/usr/openv/netbackup/bin/support/nbsu, \
+   	/usr/openv/netbackup/bin/private/nblogcfg, \
+   	/usr/openv/netbackup/bin/private/nbloggen, \
+   	/usr/openv/netbackup/bin/private/nblogmgr, \
+   	/usr/openv/netbackup/bin/private/nblogview, \
+   	/usr/openv/volmgr/bin/acsd, \
+   	/usr/openv/volmgr/bin/acssel, \
+   	/usr/openv/volmgr/bin/acsssi, \
+   	/usr/openv/volmgr/bin/acstest, \
+   	/usr/openv/volmgr/bin/avrd, \
+   	/usr/openv/volmgr/bin/dtest, \
+   	/usr/openv/volmgr/bin/ltid, \
+   	/usr/openv/volmgr/bin/mmcrawl, \
+   	/usr/openv/volmgr/bin/odld, \
+   	/usr/openv/volmgr/bin/odltest, \
+   	/usr/openv/volmgr/bin/oprd, \
+   	/usr/openv/volmgr/bin/robtest, \
+   	/usr/openv/volmgr/bin/scan, \
+   	/usr/openv/volmgr/bin/scsi_command, \
+   	/usr/openv/volmgr/bin/sg.build, \
+   	/usr/openv/volmgr/bin/sgscan, \
+   	/usr/openv/volmgr/bin/shared_drive_notify, \
+   	/usr/openv/volmgr/bin/stopltid, \
+   	/usr/openv/volmgr/bin/tl4d, \
+   	/usr/openv/volmgr/bin/tl4test, \
+   	/usr/openv/volmgr/bin/tl8cd, \
+   	/usr/openv/volmgr/bin/tl8d, \
+   	/usr/openv/volmgr/bin/tl8test, \
+   	/usr/openv/volmgr/bin/tldcd, \
+   	/usr/openv/volmgr/bin/tldd, \
+   	/usr/openv/volmgr/bin/tldtest, \
+   	/usr/openv/volmgr/bin/tlhcd, \
+   	/usr/openv/volmgr/bin/tlhd, \
+   	/usr/openv/volmgr/bin/tlhtest, \
+   	/usr/openv/volmgr/bin/tlmd, \
+   	/usr/openv/volmgr/bin/tlmtest, \
+   	/usr/openv/volmgr/bin/tpautoconf, \
+   	/usr/openv/volmgr/bin/tpclean, \
+   	/usr/openv/volmgr/bin/tpconfig, \
+   	/usr/openv/volmgr/bin/tpext, \
+   	/usr/openv/volmgr/bin/tpformat, \
+   	/usr/openv/volmgr/bin/tpreq, \
+   	/usr/openv/volmgr/bin/tpunmount, \
+   	/usr/openv/volmgr/bin/tshd, \
+   	/usr/openv/volmgr/bin/tshtest, \
+   	/usr/openv/volmgr/bin/vmadd, \
+   	/usr/openv/volmgr/bin/vmadm, \
+   	/usr/openv/volmgr/bin/vmchange, \
+   	/usr/openv/volmgr/bin/vmcheckxxx, \
+   	/usr/openv/volmgr/bin/vmctrldbm, \
+   	/usr/openv/volmgr/bin/vmd, \
+   	/usr/openv/volmgr/bin/vmdareq, \
+   	/usr/openv/volmgr/bin/vmdelete, \
+   	/usr/openv/volmgr/bin/vmglob, \
+   	/usr/openv/volmgr/bin/vminitlists, \
+   	/usr/openv/volmgr/bin/vmoprcmd, \
+   	/usr/openv/volmgr/bin/vmphyinv, \
+   	/usr/openv/volmgr/bin/vmpool, \
+   	/usr/openv/volmgr/bin/vmps, \
+   	/usr/openv/volmgr/bin/vmquery, \
+   	/usr/openv/volmgr/bin/vmrule, \
+   	/usr/openv/volmgr/bin/vmscd, \
+   	/usr/openv/volmgr/bin/vmupdate, \
+   	/usr/openv/volmgr/bin/goodies/drive_mount_notify, \
+   	/usr/openv/volmgr/bin/goodies/drive_unmount_notify, \
+   	/usr/openv/volmgr/bin/driver/sg, \
+   	/usr/openv/volmgr/bin/driver/sg.install, \
+   	/usr/openv/volmgr/bin/driver/64/sg, \
+   	/usr/bin/find /usr/openv, \
+   	sudoedit /usr/openv/netbackup/*.conf, \
+   	sudoedit /usr/openv/java/auth.conf, \
+   	/usr/bin/rm /usr/openv/logs/*, \
+   	/usr/bin/rm /usr/openv/netbackup/logs/*, \ 
+   	/usr/bin/chmod -R [0-7][0-7][0145] /usr/openv/*, \
+   	/usr/bin/chmod [0-7][0-7][0145] /usr/openv/*, \
+   	/usr/bin/rmdir /usr/openv/*, \
+   	/usr/bin/mkdir /usr/openv/*, \
+   	/usr/bin/touch /usr/openv/*, \
+   	/usr/sbin/bootinfo, \
+   	/usr/sbin/cfgmgr, \
+   	/usr/sbin/lsdev, \  
+   	/usr/sbin/lsdev -Cc adapter, \
+   	/usr/sbin/lsdev -Cc tape, \
+   	/usr/sbin/lsattr -El, \
+   	/usr/sbin/lsvpcfg, \
+   	/usr/sbin/lsvpd, \
+   	/usr/sbin/lscfg, \
+   	/usr/bin/ls, \
+   	/usr/bin/tapeutil, \
+   	/usr/bin/kill, \
+   	/usr/bin/topas, \
+   	/usr/bin/mail -s*, \
+   	/usr/bin/mtlib, \
+   	/etc/lmcpd, \
+   	sudoedit /etc/ibmatl.conf, \
+   	/usr/openv/netbackup/bin/nbunquiescence, \
+   	/usr/openv/netbackup/bin/nbvault,  \
+   	/usr/openv/netbackup/bin/ndmpagent, \
+   	/usr/openv/netbackup/bin/oracle_link, \
+   	/usr/openv/netbackup/bin/version, \
+   	/usr/openv/netbackup/bin/vltadm, \
+   	/usr/openv/netbackup/bin/vltcontainers, \
+   	/usr/openv/netbackup/bin/vlteject, \
+   	/usr/openv/netbackup/bin/vltinject, \
+   	/usr/openv/netbackup/bin/vltoffsitemedia, \
+   	/usr/openv/netbackup/bin/vltopmenu, \
+   	/usr/openv/netbackup/bin/vltrun, \
+   	/usr/openv/netbackup/bin/admincmd/nbdeployutil, \
+   	/usr/openv/netbackup/bin/admincmd/nbfindfile, \
+   	/usr/openv/netbackup/bin/admincmd/nbhardwaremon, \
+   	/usr/openv/netbackup/bin/admincmd/nbholdutil, \
+   	/usr/openv/netbackup/bin/admincmd/nbindexutil,  \
+   	/usr/openv/netbackup/bin/admincmd/nbkmsutil, \
+   	/usr/openv/netbackup/bin/admincmd/nbplupgrade, \
+   	/usr/openv/netbackup/bin/admincmd/nbregopsc, \
+   	/usr/openv/netbackup/bin/admincmd/nbreplicate, \
+   	/usr/openv/netbackup/bin/admincmd/nbsnapimport, \
+   	/usr/openv/netbackup/bin/admincmd/nbsnapreplicate, \
+   	/usr/openv/netbackup/bin/admincmd/nbsvrgrp, \
+   	/usr/openv/netbackup/bin/admincmd/nb_updatedssu, \
+   	/usr/openv/netbackup/bin/admincmd/resilient_clients, \
+   	!/usr/bin/chmod *[\:space\:]/* *,!/usr/bin/chmod *./*,!/usr/bin/chmod *..*, \
+   	!/usr/bin/chown *[\:space\:]/* *,!/usr/bin/chown *./*,!/usr/bin/chown *..*, \
+   	!/usr/bin/chgrp *[\:space\:]/* *,!/usr/bin/chgrp *./*,!/usr/bin/chgrp *..*, \
+   	!/usr/bin/rm *[\:space\:]/* *,   !/usr/bin/rm *./*,   !/usr/bin/rm *..*, \
+   	!/usr/bin/mkdir *[\:space\:]/* *,!/usr/bin/mkdir *./*,!/usr/bin/mkdir *..*, \
+   	!/usr/bin/rmdir *[\:space\:]/* *,!/usr/bin/rmdir *./*,!/usr/bin/rmdir *..*, \
+   	!/usr/bin/touch *[\:space\:]/* *,!/usr/bin/touch *./*,!/usr/bin/touch *..*, \
+   	!/usr/bin/find * -exec *, !/usr/bin/find * -ok *, \
+   	!/usr/bin/find * -execdir *, !/usr/bin/find * -okdir *, \ 			
+	/bin/mkdir /usr/openv/[!..]*, \
+	/usr/bin/chmod [0-7][0-7][0145] /usr/openv/[!..]*, \
+	/usr/bin/chmod -R [0-7][0-7][0145] /usr/openv/[!..]*, \
+	/usr/bin/chown cyadmbkp /usr/openv/[!..]*, \
+	/usr/bin/echo /usr/openv/[!..]*, \
+	/usr/bin/gunzip /usr/openv/[!..]*, \
+	/usr/bin/gzip /usr/openv/[!..]*, \
+	/usr/bin/mv /usr/openv/[!..]*, \
+	/usr/bin/rm /usr/openv/[!..]*, \
+	/usr/bin/tar /usr/openv/[!..]*, \
+	/usr/bin/tar -xvf /usr/openv/NetBackup_[0-9].[0-9]_AIX.tar, \
+	/usr/bin/tar -xvf /usr/openv/NetBackup_[0-9].[0-9]_AIX64.tar, \
+	/usr/bin/tar -xvf /usr/openv/NetBackup_[0-9].[0-9]_CLIENTS.tar, \
+	/usr/bin/tar -xvf /usr/openv/NetBackup_[0-9].[0-9]_LinuxR_x86_64.tar, \
+	/usr/openv/db/bin/create_nbdb, \
+	/usr/openv/db/bin/dbadm, \
+	/usr/openv/db/bin/dbbackup, \
+	/usr/openv/db/bin/dbdsn, \
+	/usr/openv/db/bin/dbeng11, \
+	/usr/openv/db/bin/dberase, \
+	/usr/openv/db/bin/dbfhide, \
+	/usr/openv/db/bin/dbinfo, \
+	/usr/openv/db/bin/dbinit, \
+	/usr/openv/db/bin/dblocate, \
+	/usr/openv/db/bin/dbping, \
+	/usr/openv/db/bin/dbspawn, \
+	/usr/openv/db/bin/dbsrv11, \
+	/usr/openv/db/bin/dbstop, \
+	/usr/openv/db/bin/dbtran, \
+	/usr/openv/db/bin/dbtsinfo, \
+	/usr/openv/db/bin/dbunload, \
+	/usr/openv/db/bin/dbunlspt, \
+	/usr/openv/db/bin/dbupgrad, \
+	/usr/openv/db/bin/dbvalid, \
+	/usr/openv/db/bin/nbdb_admin, \
+	/usr/openv/db/bin/nbdb_backup, \
+	/usr/openv/db/bin/nbdb_move, \
+	/usr/openv/db/bin/nbdb_ping, \
+	/usr/openv/db/bin/nbdb_restore, \
+	/usr/openv/db/bin/nbdb_unload, \
+	/usr/openv/db/bin/nbdbms_server_install, \
+	/usr/openv/db/bin/nbdbms_start_server, \
+	/usr/openv/java/get_trace, \
+	/usr/openv/java/jbpSA, \
+	/usr/openv/java/jnbSA, \
+	/usr/openv/java/license, \
+	/usr/openv/java/nbj.conf.bak, \
+	/usr/openv/java/sdk, \
+	/usr/openv/java/vrts, \
+	/usr/openv/java/Xenv, \
+	/usr/openv/netbackup/bin/admincmd/activetest, \
+	/usr/openv/netbackup/bin/admincmd/backupreport.sh, \
+	/usr/openv/netbackup/bin/admincmd/BackupScrOutput, \
+	/usr/openv/netbackup/bin/admincmd/bpbackupvxss, \
+	/usr/openv/netbackup/bin/admincmd/nbauditreport, \
+	/usr/openv/netbackup/bin/admincmd/nbcatsync, \
+	/usr/openv/netbackup/bin/admincmd/nbcertupdater, \
+	/usr/openv/netbackup/bin/admincmd/nbdecommission, \
+	/usr/openv/netbackup/bin/admincmd/nbdiag, \
+	/usr/openv/netbackup/bin/admincmd/Platform_Version, \
+	/usr/openv/netbackup/bin/admincmd/plist, \
+	/usr/openv/netbackup/bin/admincmd/POLICY_LIST, \
+	/usr/openv/netbackup/bin/admincmd/PolicyErrorLog, \
+	/usr/openv/netbackup/bin/admincmd/PolicyList, \
+	/usr/openv/netbackup/bin/admincmd/test, \
+	/usr/openv/netbackup/bin/atldapconf, \
+	/usr/openv/netbackup/bin/backint, \
+	/usr/openv/netbackup/bin/backup_exit_notify.old, \
+	/usr/openv/netbackup/bin/bmrbd, \
+	/usr/openv/netbackup/bin/bmrconfig, \
+	/usr/openv/netbackup/bin/bmrd, \
+	/usr/openv/netbackup/bin/bmrepadm, \
+	/usr/openv/netbackup/bin/bmrovradm, \
+	/usr/openv/netbackup/bin/bmrpans, \
+	/usr/openv/netbackup/bin/bmrprep, \
+	/usr/openv/netbackup/bin/bmrs, \
+	/usr/openv/netbackup/bin/bmrsetupboot, \
+	/usr/openv/netbackup/bin/bmrsetupmaster, \
+	/usr/openv/netbackup/bin/bmrsrtadm, \
+	/usr/openv/netbackup/bin/bpcd_new, \
+	/usr/openv/netbackup/bin/bpclusterkill, \
+	/usr/openv/netbackup/bin/bpdb2proxy, \
+	/usr/openv/netbackup/bin/bpdbsbdb2, \
+	/usr/openv/netbackup/bin/bpdbsbora, \
+	/usr/openv/netbackup/bin/bpdhcp, \
+	/usr/openv/netbackup/bin/bporaexp64, \
+	/usr/openv/netbackup/bin/bporaimp64, \
+	/usr/openv/netbackup/bin/bptestnetconn, \
+	/usr/openv/netbackup/bin/bptm_diskfull_delaylock, \
+	/usr/openv/netbackup/bin/bpubsdb2, \
+	/usr/openv/netbackup/bin/bpubsora, \
+	/usr/openv/netbackup/bin/bpVMreq, \
+	/usr/openv/netbackup/bin/cat_downgrade, \
+	/usr/openv/netbackup/bin/cluster, \
+	/usr/openv/netbackup/bin/db2_config, \
+	/usr/openv/netbackup/bin/db2rhf.64, \
+	/usr/openv/netbackup/bin/db2uext2.64, \
+	/usr/openv/netbackup/bin/dbbackup_notify_new, \
+	/usr/openv/netbackup/bin/goodies/jlu.jar, \
+	/usr/openv/netbackup/bin/goodies/man, \
+	/usr/openv/netbackup/bin/goodies/mediascripts, \
+	/usr/openv/netbackup/bin/goodies/migrate_vxul_logs, \
+	/usr/openv/netbackup/bin/goodies/set_client_deduplication, \
+	/usr/openv/netbackup/bin/goodies/streamsfile_update, \
+	/usr/openv/netbackup/bin/goodies/support, \
+	/usr/openv/netbackup/bin/goodies/vlt_ejectlist_notify, \
+	/usr/openv/netbackup/bin/goodies/vlt_end_notify, \
+	/usr/openv/netbackup/bin/goodies/vlt_endeject_notify, \
+	/usr/openv/netbackup/bin/goodies/vlt_start_notify, \
+	/usr/openv/netbackup/bin/goodies/vlt_starteject_notify, \
+	/usr/openv/netbackup/bin/informix_config, \
+	/usr/openv/netbackup/bin/infxbsa.so, \
+	/usr/openv/netbackup/bin/infxbsa.so64, \
+	/usr/openv/netbackup/bin/libobk.a64, \
+	/usr/openv/netbackup/bin/libsapora.a64, \
+	/usr/openv/netbackup/bin/libsybackup.sl, \
+	/usr/openv/netbackup/bin/lotusnotes_config, \
+	/usr/openv/netbackup/bin/mkfifo, \
+	/usr/openv/netbackup/bin/mkisofs, \
+	/usr/openv/netbackup/bin/nbars, \
+	/usr/openv/netbackup/bin/nbatd, \
+	/usr/openv/netbackup/bin/nbaudit, \
+	/usr/openv/netbackup/bin/nbazd, \
+	/usr/openv/netbackup/bin/nbbrowse, \
+	/usr/openv/netbackup/bin/nbcs, \
+	/usr/openv/netbackup/bin/nbdb2.sl64, \
+	/usr/openv/netbackup/bin/nbdboffline, \
+	/usr/openv/netbackup/bin/nbdbonline, \
+	/usr/openv/netbackup/bin/nbdiscover, \
+	/usr/openv/netbackup/bin/nbfsd_irp, \
+	/usr/openv/netbackup/bin/nbkms, \
+	/usr/openv/netbackup/bin/nbliveup, \
+	/usr/openv/netbackup/bin/nblnagent, \
+	/usr/openv/netbackup/bin/nblnagent64, \
+	/usr/openv/netbackup/bin/nblndb2, \
+	/usr/openv/netbackup/bin/nborautil, \
+	/usr/openv/netbackup/bin/nbostpxy, \
+	/usr/openv/netbackup/bin/nbquiescence, \
+	/usr/openv/netbackup/bin/plist, \
+	/usr/openv/netbackup/bin/private, \
+	/usr/openv/netbackup/bin/rc.bmrbd, \
+	/usr/openv/netbackup/bin/rc.bmrd, \
+	/usr/openv/netbackup/bin/Scans, \
+	/usr/openv/netbackup/bin/supoort/bin/nbsauth, \
+	/usr/openv/netbackup/bin/supoort/bin/nbsemmconf, \
+	/usr/openv/netbackup/bin/supoort/bin/nbsfscoverage, \
+	/usr/openv/netbackup/bin/supoort/bin/nbsndmpattr, \
+	/usr/openv/netbackup/bin/supoort/bin/nbsresolve, \
+	/usr/openv/netbackup/bin/support, \
+	/usr/openv/netbackup/bin/support/NBCC, \
+	/usr/openv/netbackup/bin/support/NBCCR, \
+	/usr/openv/netbackup/bin/support/nbdna, \
+	/usr/openv/netbackup/bin/support/nbsupport, \
+	/usr/openv/netbackup/bin/sybase_config, \
+	/usr/openv/netbackup/bin/vnetd, \
+	/usr/openv/netbackup/bin/vnetd_new, \
+	/usr/openv/netbackup/bin/vxmsadm, \
+	/usr/openv/netbackup/bin/vxmsadmST, \
+	/usr/openv/netbackup/bp.conf, \
+	/usr/openv/NetBackup_[0-9].[0-9]_AIX/install, \
+	/usr/openv/NetBackup_[0-9].[0-9]_AIX64/install, \
+	/usr/openv/NetBackup_[0-9].[0-9]_CLIENTS/install, \
+	/usr/openv/NetBackup_[0-9].[0-9]_CLIENTS1.tar, \
+	/usr/openv/NetBackup_[0-9].[0-9]_CLIENTS1/install, \
+	/usr/openv/NetBackup_[0-9].[0-9]_LinuxR_x86_64/install, \
+	/usr/openv/volmgr/bin/driver, \
+	/usr/sbin/fuser /usr/openv/[!..]*, \
+	sudoedit /usr/openv/[!..]*, \
+	sudoedit /usr/openv/java/nbj.conf, \
+	/usr/bin/startsrc, \
+	/usr/openv/volmgr/bin/driver, \
+	/usr/openv/netbackup/bin/Scans, \
+	/usr/openv/netbackup/bin/dbbackup_notify_new, \
+	/usr/openv/netbackup/bin/bmrconfig, \
+	/usr/openv/netbackup/bin/bmrepadm, \
+	/usr/openv/netbackup/bin/bmrovradm, \
+	/usr/openv/netbackup/bin/bmrprep, \
+	/usr/openv/netbackup/bin/bmrsetupmaster, \
+	/usr/openv/netbackup/bin/bmrpans, \
+	/usr/openv/netbackup/bin/rc.bmrd, \
+	/usr/openv/netbackup/bin/bmrd, \
+	/usr/openv/netbackup/bin/bmrs, \
+	/usr/openv/netbackup/bin/nbkms, \
+	/usr/openv/netbackup/bin/nbaudit, \
+	/usr/openv/netbackup/bin/cat_downgrade, \
+	/usr/openv/netbackup/bin/atldapconf, \
+	/usr/openv/netbackup/bin/nbars, \
+	/usr/openv/netbackup/bin/nbfsd_irp, \
+	/usr/openv/netbackup/bin/backup_exit_notify.old, \
+	/usr/openv/netbackup/bin/nbazd, \
+	/usr/openv/netbackup/bin/nbatd, \
+	/usr/openv/netbackup/bin/bpclusterkill, \
+	/usr/openv/netbackup/bin/cluster, \
+	/usr/openv/netbackup/bin/admincmd/backupreport.sh, \
+	/usr/openv/netbackup/bin/backint, \
+	/usr/openv/netbackup/bin/bmrbd, \
+	/usr/openv/netbackup/bin/bmrsetupboot, \
+	/usr/openv/netbackup/bin/bpVMreq, \
+	/usr/openv/netbackup/bin/bmrsrtadm, \
+	/usr/openv/netbackup/bin/bpdhcp, \
+	/usr/openv/netbackup/bin/bpdbsbora, \
+	/usr/openv/netbackup/bin/bpdbsbdb2, \
+	/usr/openv/netbackup/bin/bpdb2proxy, \
+	/usr/openv/netbackup/bin/bpcd_new, \
+	/usr/openv/netbackup/bin/bpubsdb2, \
+	/usr/openv/netbackup/bin/bptestnetconn, \
+	/usr/openv/netbackup/bin/bporaimp64, \
+	/usr/openv/netbackup/bin/bporaexp64, \
+	/usr/openv/netbackup/bin/db2uext2.64, \
+	/usr/openv/netbackup/bin/db2rhf.64, \
+	/usr/openv/netbackup/bin/db2_config, \
+	/usr/openv/netbackup/bin/bpubsora, \
+	/usr/openv/netbackup/bin/nbbrowse, \
+	/usr/openv/netbackup/bin/mkisofs, \
+	/usr/openv/netbackup/bin/mkfifo, \
+	/usr/openv/netbackup/bin/lotusnotes_config, \
+	/usr/openv/netbackup/bin/libsybackup.sl, \
+	/usr/openv/netbackup/bin/libsapora.a64, \
+	/usr/openv/netbackup/bin/libobk.a64, \
+	/usr/openv/netbackup/bin/infxbsa.so64, \
+	/usr/openv/netbackup/bin/infxbsa.so, \
+	/usr/openv/netbackup/bin/informix_config, \
+	/usr/openv/netbackup/bin/nblnagent64, \
+	/usr/openv/netbackup/bin/nblnagent, \
+	/usr/openv/netbackup/bin/nbliveup, \
+	/usr/openv/netbackup/bin/nbdiscover, \
+	/usr/openv/netbackup/bin/nbdbonline, \
+	/usr/openv/netbackup/bin/nbdboffline, \
+	/usr/openv/netbackup/bin/nbdb2.sl64, \
+	/usr/openv/netbackup/bin/nbcs, \
+	/usr/openv/netbackup/bin/nbquiescence, \
+	/usr/openv/netbackup/bin/nbostpxy, \
+	/usr/openv/netbackup/bin/nborautil, \
+	/usr/openv/netbackup/bin/nblndb2, \
+	/usr/openv/netbackup/bin/rc.bmrbd, \
+	/usr/openv/netbackup/bin/private, \
+	/usr/openv/netbackup/bin/vxmsadmST, \
+	/usr/openv/netbackup/bin/vxmsadm, \
+	/usr/openv/netbackup/bin/vnetd_new, \
+	/usr/openv/netbackup/bin/sybase_config, \
+	/usr/openv/netbackup/bin/support, \
+	/usr/openv/netbackup/bin/vnetd, \
+	/usr/openv/netbackup/bin/bptm_diskfull_delaylock, \
+	/usr/openv/netbackup/bin/plist, \
+	/usr/openv/netbackup/bin/goodies/streamsfile_update, \
+	/usr/openv/netbackup/bin/goodies/set_client_deduplication, \
+        /usr/openv/netbackup/bin/goodies/mediascripts, \
+        /usr/bin/cd /usr/openv/volmgr/bin, \
+        sudoedit /etc/hosts, \
+        /usr/sbin/rmdev, \
+		/usr/bin/tar -xvf /usr/openv/client/clientsoftware.tar, \
+		/usr/openv/client/clientsoftware/install, \
+		/usr/bin/tar -xvf /usr/openv/mediaserver/mediaserversoftware.tar, \
+		/usr/openv/mediaserver/mediaserversoftware/install, \
+		/usr/bin/tar -xvf /usr/openv/HP-OST/hp-ost-plugin.tar, \
+		/usr/openv/HP-OST/hp-ost-plugin/install.sh, \
+		/usr/openv/hpe/ost/uninstall.sh, \
+		/usr/sbin/installp -u SYMCnbjava, \
+		/usr/bin/rpm -e SYMCnbjava, \
+		/usr/sbin/installp -u SYMCnbjre, \
+		/usr/bin/rpm -e SYMCnbjre, \
+		/usr/sbin/installp -u SYMCnbclt, \
+		/usr/bin/rpm -e SYMCnbclt, \
+		/usr/sbin/installp -u VRTSpbx, \
+		/usr/bin/rpm -e VRTSpbx, \
+		/usr/openv/netbackup/bin/vxlogcfg -r -p 51216
+ 
+IBM_NBU_BAU ALL=(root) NOPASSWD:IBM_NBU_BAU_CMDS, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+# Begin   NA Netbackup standard template Ver 1.1   Date 2014-06-26 * Maintenance * Refer NA14247046 Begin #
+# B- Standard "Change/Installation Window" entries:
+# NBU entries for use in scheduled change windows...
+###  CAUTION TO SUDO IMPLEMENTATION TEAM:  this entry includes SMIT.  
+###  You must guarantee this 'standard alias' content exists:
+# 	For sudo 1.7.0 and up, include the following entries in the 
+# 	/etc/sudo.env file:
+# 		SMIT_SHELL=n
+#	 	SMIT_SEMI_COLON=n
+#		SMIT_QUOTE=n
+# 	and define sudo environment file within /etc/sudoers (or included
+# 	file) via: 
+#	
+#.Defaults env_file=/etc/sudo.env 
+#  "Full" standard alias content may be found at:  https://ibm.biz/GsudoStdAlias
+# NetBackup entries for use in scheduled change windows...
+#---------------[ NBU change window section ]------------------#
+#Cmnd_Alias IBM_NBU_CHG_CMDS = /usr/bin/smitty cl_admin, \
+#   /usr/bin/smitty device, \
+#   /usr/bin/smitty install_latest, \
+#   /usr/bin/smitty lvm, \
+#   /usr/bin/smitty problem, \
+#   /usr/bin/smitty storage, \
+#   /usr/bin/smitty update_all, \
+#   /usr/bin/inittab, \
+#   /usr/bin/chitab, \
+#   /usr/bin/mkitab, \
+#   /usr/bin/rmitab, \
+#   /usr/bin/kill, \
+#   /usr/sbin/rmdev, \
+#   /usr/sbin/cfgmgr
+
+#IBM_NBU_CHG  NBU_HOSTS = IBM_NBU_CHG_CMDS
+
+# End   NA NetBackup standard template Ver 1.1   Date 2014-06-26  * Maintenance * Refer NA14247046 End #
+# End   NA NetBackup standard template Ver 1.3   Date 2014-08-28 * Master * Refer NA14247046 End #

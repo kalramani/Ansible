@@ -1,0 +1,6 @@
+---
+- name: Asm creation play
+  hosts: oracle
+  roles:
+    - role: grid_install
+

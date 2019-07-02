@@ -1,0 +1,33 @@
+---
+- name: Testing with Cisco IMC
+  hosts: tower
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Vmedia mount
+      imc_rest:
+        hostname: '{{ imc_hostname }}'
+        username: '{{ imc_username }}'
+        password: '{{ imc_password }}'
+        validate_certs: no
+        content: |
+          <!-- Disconnect vmedia mount -->
+          <configConfMo dn="sys/svc-ext/vmedia-svc/vmmap-Linux" inHierarchical="false"><inConfig>
+            <commVMediaMap dn="sys/svc-ext/vmedia-svc/vmmap-Linux" map="www" remoteFile="{{ HSTNAME }}.iso" remoteShare="http://10.13.61.74/iso/" status="removed" />
+          </inConfig></configConfMo>  
+      delegate_to: localhost
+
+- name: remove iso file
+  hosts: fileserver
+  gather_facts: false
+  become: true
+  tasks:
+    - name: remove iso file from tower server
+      file:
+        path: '/var/www/html/iso/{{ HSTNAME }}.iso'
+        state: absent
+
+    - name: remove iso file from tower server
+      file:
+        path: '/var/www/html/ks/{{ IPADDR }}.iso'
+        state: absent

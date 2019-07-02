@@ -1,0 +1,11 @@
+---
+#******************************************************************************
+- name: Disable Multilib package installations
+  template:
+      dest: '/etc/yum.repos.d/YUM.repo'
+      src: "hardening/common/YUM.repo"
+      owner: root
+      group: root
+      mode: 0644
+
+

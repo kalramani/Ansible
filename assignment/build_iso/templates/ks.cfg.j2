@@ -1,0 +1,49 @@
+auth --enableshadow --passalgo=sha512
+cdrom
+text
+firstboot --disable
+ignoredisk --only-use=sda
+keyboard --vckeymap=us --xlayouts='us'
+lang en_US.UTF-8
+%include /tmp/networkconfig
+reboot
+rootpw --iscrypted $6$gGXzuZcPnDtemKG/$rmdth0ru5XYI8gFrw3MvRizGnSogeFYGveCAnW6ukSUy2PPa1M.1y5l5KdSbfrpbbzGEszYwE0Umz4dnqBSL//
+selinux --disabled
+services --disabled="chronyd,auditd"
+timezone Asia/Kolkata --isUtc --nontp
+
+user --name=decoy --password=$6$ICk710Tk$iEMAsiRy5sx74ks7Z5eZdVdOyc8NupLLtvsR/DCFjqmUknjc7MF2PyBY58.B0HjeTWq/1V7SRKPJjMES62BE6/ --iscrypted --gecos="Airtel Mgmt User"
+#################################################################################
+bootloader --location=mbr --driveorder=sda --append="crashkernel=768 rhgb quiet ipv6.disable=1"
+clearpart --all --drives=sda
+zerombr
+#autopart --type=lvm
+# Partition clearing information
+#####################################################################
+# Partition clearing information
+part /boot --fstype=ext4 --size=1024 --ondisk=/dev/sda
+part pv.01 --grow --size=1000 --ondisk=/dev/sda
+volgroup rootvg pv.01
+logvol /home --fstype=xfs --name=home --vgname=rootvg --size=1024  --fsoptions="nodev"
+logvol /opt --fstype=xfs --name=opt --vgname=rootvg --size=1024
+logvol / --fstype=xfs --name=root --vgname=rootvg --size=10240
+logvol swap --name=swap --vgname=rootvg --size=4096
+logvol /tmp --fstype=xfs --name=tmp --vgname=rootvg --size=1024 --fsoptions="nodev,noexec,nosuid"
+logvol /var --fstype=xfs --name=var --vgname=rootvg --size=4096 --fsoptions="nodev"
+######################################################################################
+%pre
+echo "network  --bootproto=static --device=eth0 --gateway={{ GW }} --ip={{ IPADDR }} --nameserver={{ NAMESRVIP }} --netmask={{ MASK }} --noipv6 --activate" > /tmp/networkconfig
+echo "network --hostname={{ HSTNAME }}" >> /tmp/networkconfig
+%end
+%post
+cat << EOF >> /etc/sudoers.d/decoy
+decoy  ALL=(ALL) NOPASSWD: ALL
+EOF
+%end
+
+%packages
+@^minimal
+@core
+kexec-tools
+net-tools
+%end

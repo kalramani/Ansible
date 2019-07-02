@@ -1,0 +1,8 @@
+---
+
+- name: Set MOTD
+  file: content="Authorized uses only. All activity may be monitored and reported.\n"
+        dest=/etc/motd
+        owner=root
+        group=root
+        mode=0644

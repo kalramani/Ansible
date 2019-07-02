@@ -1,0 +1,2 @@
+    - name: generate iso image
+      shell: 'cd /data/isodata && mkisofs -o /var/www/html/iso/{{ HSTNAME }}.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -V "CentOS 7 x86_64" -R -J -v -T .'

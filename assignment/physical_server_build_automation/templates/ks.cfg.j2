@@ -1,0 +1,124 @@
+auth --enableshadow --passalgo=sha512
+cdrom
+text
+firstboot --disable
+firewall --disabled
+ignoredisk --only-use=sda
+keyboard --vckeymap=us --xlayouts='us'
+lang en_US.UTF-8
+%include /tmp/networkconfig
+reboot
+rootpw --iscrypted $6$gGXzuZcPnDtemKG/$rmdth0ru5XYI8gFrw3MvRizGnSogeFYGveCAnW6ukSUy2PPa1M.1y5l5KdSbfrpbbzGEszYwE0Umz4dnqBSL//
+
+selinux --disabled
+services --disabled="chronyd" --enabled="ntpd,psacct,ntpd"
+skipx
+timezone Asia/Kolkata --isUtc
+
+
+bootloader --append="ipv6.disable=1 crashkernel=764M" --location=mbr --boot-drive=sda
+clearpart --all --initlabel
+zerombr
+######################################################################################
+part /boot --fstype="xfs" --ondisk=sda --size=1024
+part pv.67 --fstype="lvmpv" --ondisk=sda --size=200000
+volgroup RootVg --pesize=4096 pv.67
+logvol /home  --fstype="xfs" --size=10240 --name=home --vgname=RootVg
+logvol /opt  --fstype="xfs" --size=10240 --name=opt --vgname=RootVg
+logvol /var  --fstype="xfs" --size=20480 --name=var --vgname=RootVg
+logvol /usr  --fstype="xfs" --size=51024 --name=usr --vgname=RootVg
+logvol swap  --fstype="swap" --size=16384 --name=swap --vgname=RootVg
+logvol /tmp  --fstype="xfs" --size=10240 --name=tmp --vgname=RootVg
+logvol /  --fstype="xfs" --size=20480 --name=root --vgname=RootVg
+######################################################################################
+
+
+%pre
+echo "network  --bootproto=static --device=eth0 --gateway={{ GW }} --ip={{ IPADDR }} --nameserver={{ NAMESRVIP }} --netmask={{ MASK }} --noipv6 --activate" > /tmp/networkconfig
+echo "network --hostname={{ HSTNAME }}" >> /tmp/networkconfig
+%end
+
+%post
+#### Add user decoy
+useradd decoy
+echo "Mycl0ud@456"|passwd --stdin decoy
+#### Add decoy in sudoers
+echo "decoy   ALL=(ALL)       NOPASSWD:ALL" >> /etc/sudoers
+
+#######################
+
+cat <<EOF>>/etc/profile
+PROMPT=no
+trap "" 1 2 3 15
+export TMOUT=300
+readonly TMOUT
+EOF
+
+echo > /etc/sysconfig/network-scripts/ifcfg-eth0
+echo > /etc/sysconfig/network-scripts/ifcfg-eth1
+
+cat <<EOF>>/etc/sysconfig/network-scripts/ifcfg-bond0
+NAME=bond0
+DEVICE=bond0
+TYPE=bond
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR="{{ IPADDR }}"
+GATEWAY="{{ GW }}"
+NETMASK="{{ MASK }}"
+BONDING_OPTS="miimon=100 mode=4 lacp_rate=0"
+EOF
+
+cat <<EOF>>/etc/sysconfig/network-scripts/ifcfg-eth0
+BOOTPROTO=none
+DEVICE=eth0
+ONBOOT=yes
+IPV6INIT=yes
+TYPE=Ethernet
+NAME="System eth0"
+MASTER=bond0
+SLAVE=yes
+EOF
+
+cat <<EOF>>/etc/sysconfig/network-scripts/ifcfg-eth1
+BOOTPROTO=none
+DEVICE=eth1
+ONBOOT=yes
+IPV6INIT=yes
+TYPE=Ethernet
+NAME="System eth1"
+MASTER=bond0
+SLAVE=yes
+EOF
+%end
+
+
+%packages
+@^minimal
+@core
+curl
+kexec-tools
+kexec-tools
+net-tools
+ntp
+numactl
+numad
+perf
+psacct
+psmisc
+screen
+strace
+sysstat
+tcpdump
+telnet
+traceroute
+tuned
+vim
+-chrony
+
+%end
+
+%addon com_redhat_kdump --enable --reserve-mb='764M'
+
+%end
+

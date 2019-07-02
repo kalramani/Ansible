@@ -1,0 +1,35 @@
+---
+# tasks file for oracle_install
+
+- name: get files for grid
+  get_url:
+    url: "{{ item }}"
+    dest: /u01/software
+    mode: 0644
+    owner: grid
+    group: oinstall
+  with_items:
+    - http://10.5.200.155/oraclesw/V46096-01_1of2.zip
+    - http://10.5.200.155/oraclesw/V46096-01_2of2.zip
+
+
+- name: unzip files
+  unarchive:
+    src: "/u01/software/{{ item }}"
+    dest: /u01/software/
+    remote_src: yes
+  with_items:
+    - V46096-01_1of2.zip
+    - V46096-01_2of2.zip
+
+- name: sent the grid response files
+  template:
+    src: grid.rsp.j2
+    dest: /u01/software/grid/response/grid.rsp
+    owner: grid
+    group: oinstall
+
+
+- name: execute the run installer for grid
+  shell: "{{ grid_sw_location }}/runInstaller -silent -ignorePrereq -ignoreSysPrereqs -waitforcompletion -responseFile {{ grid_sw_location }}/response/grid.rsp"
+

@@ -1,0 +1,8 @@
+---
+#******************************************************************************
+- name: Disable Multilib package installations
+  lineinfile:
+      dest: '/etc/yum.conf'
+      regexp: "^exclude"
+      line: "exclude=*.i386 *.i686 *.i586 *.i486"
+      state: present

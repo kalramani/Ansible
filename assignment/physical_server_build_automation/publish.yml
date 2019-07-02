@@ -1,0 +1,26 @@
+---
+- name: Publish the KS and iso files
+  gather_facts: no
+  hosts: fileserver
+  tasks:
+    - name: copy ks file
+      copy:
+        src: "files/ks_{{ IPADDR }}.cfg"
+        dest: /var/www/html/ks
+        mode: 0644
+        owner: root
+        group: root
+
+#    - name: copy iso file
+#      copy:
+#        src: "files/{{ HSTNAME }}.iso"
+#        dest: /var/www/html/iso
+#        mode: 0644
+#        owner: root
+#        group: root
+
+#    - name: remove iso file from tower server
+#      file:
+#        path: 'files/{{ HSTNAME }}.iso' 
+#        state: absent
+#      delegate_to: localhost

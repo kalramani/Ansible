@@ -1,0 +1,13 @@
+# Begin NA TELEGRAPH Application template Date 2018-23-07  #
+# Description : TELEGRAPH_TOOL_TEMPLATE  USER_ID : tickuser
+
+User_Alias IBM_TELEGRAPH_ADM = tickuser   # NOTE: A different group MUST be used for the _ADM commands.
+                                       	#       This group will ONLY be populated as needed during install/problem/change,
+                                       #       then emptied again after 'triggering event.'
+
+Cmnd_Alias IBM_TELEGRAPH_ADM_CMD = \
+                /sbin/service, \
+                /etc/telegraf
+IBM_TELEGRAPH_ADM ALL=(root) NOPASSWD:IBM_TELEGRAPH_ADM_CMD, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+# End NA TELEGRAPH Application template Date 2018-23-07  

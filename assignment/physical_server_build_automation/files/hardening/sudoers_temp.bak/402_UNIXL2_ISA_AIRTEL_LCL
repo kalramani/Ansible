@@ -1,0 +1,255 @@
+# Begin  AIRTEL UNIX-ADMIN standard template Ver 1.1 Date 2016-09-20  #
+# Description : UNIX_ADMINISTRATOR_L2 USER_ID : cyadmul2
+#
+# Software products and versions
+# Supported OS platforms - 
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control
+# V1.0 - shortname@us.ibm.com - put your shortname and  correct country code
+#          plus any comments you want included into the sudoers file.
+#
+# 
+# <:NA notes- rename this file to your application name, ensure you keep it a
+#      'pure' unix text file, otherwise it may not work right when #included.
+#      Recommend use of VIM to edit:  
+#      Reminder when replacing 'yourAppName' below, use all CAPS, that is 
+#      syntatically required by sudo. >
+#
+#=====================================================================================
+#
+# Replace sample group names with real group names for your account
+# 
+User_Alias      IBM_UL2_BAU = cyadmul2 
+
+#User_Alias      IBM_yourAppName_ADM = %admgrp # Use only if you have a 'type B'
+                    # sudo entry, otherwise delete.  If used, it MUST be a 
+                    # different group then used for the IBM_*_BAU entry, and 
+                    # will normally be empty.  ID Admin will populate this
+                    # group during change windows/problem event, then empty
+                    # the group when the event is complete.
+
+#Host_Alias     yourAppName_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# -----Do not change anything below this line, excepting to replace ----------
+# -----         <:path *> content with local pathing.       ------------------
+#
+Cmnd_Alias IBM_CL2_BAU_CMDS = \
+			/usr/sbin/ufsdump, \
+			/usr/sbin/devfsadm, \
+			/usr/sbin/useradd, \
+			/usr/sbin/groupdel, \
+			/usr/sbin/fbackup, \
+			/usr/sbin/vgchgid, \
+			/usr/sbin/vgimport, \
+			/usr/sbin/lvchange, \
+			/usr/sbin/lvlnboot, \
+			/usr/sbin/lvrmboot, \
+			/usr/sbin/lvdisplay, \
+			/opt/perf/bin/glance, \
+			/usr/sbin/pvcreate, \
+			/usr/lbin/modprpw, \
+			/usr/bin/chuser, \
+			/usr/sbin/varyonvg, \
+			/usr/bin/stopsrc, \
+			/usr/sbin/aioo, \
+			/usr/contrib/bin/show_patches, \
+			/usr/sbin/exportfs, \
+			/usr/bin/tail, \
+			/usr/sbin/vparstatus, \
+			/usr/sbin/restore, \
+			/usr/bin/cp, \
+			/usr/bin/chown, \
+			/usr/bin/ps, \
+			/usr/contrib/bin/gzip, \
+			/usr/bin/perl, \
+			/usr/sbin/cfgmgr, \
+			/usr/sbin/chlv, \
+			/usr/bin/rmdir, \
+			/usr/sbin/mirrorvg, \
+			/usr/sbin/umount, \
+			/usr/sbin/extendvg, \
+			/usr/sbin/lquerypv, \
+			/usr/bin/topas, \
+			/usr/sbin/lsfs, \
+			/usr/sbin/readvgda, \
+			/usr/sbin/lsof, \
+			/usr/bin/bosboot, \
+			/usr/bin/uname, \
+			/usr/bin/kill, \
+			/usr/sbin/syncvg, \
+			/usr/sbin/redefinevg, \
+			/usr/sbin/prtconf, \
+			/usr/sbin/ufsrestore, \
+			/usr/bin/touch, \
+			/usr/sbin/usermod, \
+			/usr/bin/du, \
+			/usr/sbin/frecover, \
+			/usr/sbin/vgcreate, \
+			/usr/sbin/vgreduce, \
+			/usr/sbin/lvchange.run, \
+			/usr/sbin/lvmchk, \
+			/usr/sbin/lvsplit, \
+			/usr/sbin/lvextend, \
+			/usr/sbin/ioscan, \
+			/usr/sbin/pvdisplay, \
+			/usr/sbin/kmtune, \
+			/usr/bin/logins, \
+			/usr/sbin/varyoffvg, \
+			/usr/bin/refresh, \
+			/usr/sbin/snap, \
+			/opt/ignite/bin/print_manifest, \
+			/usr/sbin/swapinfo, \
+			/usr/sbin/dmidecode, \
+			/usr/sbin/parstatus, \
+			/usr/bin/ls, \
+			/usr/bin/compress, \
+			/usr/bin/tar, \
+			/usr/bin/top, \
+			/usr/sbin/vg*, \
+			/usr/bin/scp, \
+			/usr/sbin/mkvg, \
+			/usr/sbin/chfs, \
+			/usr/bin/pcmpath, \
+			/usr/sbin/migratepv, \
+			/usr/sbin/fuser, \
+			/usr/sbin/rmfs, \
+			/usr/sbin/lqueryvg, \
+			/usr/bin/filemon, \
+			/usr/bin/stopsrc, \
+			/usr/sbin/cplv, \
+			/bin/netstat, \
+			/usr/bin/bootlist, \
+			/usr/bin/oslevel, \
+			/usr/bin/lslpp, \
+			/usr/sbin/lsdev, \
+			/usr/bin/usrck, \
+			/usr/sbin/dmidecode, \
+			/usr/sbin/fuser, \
+			/usr/sbin/mknod, \
+			/usr/sbin/userdel, \
+			/usr/sbin/route, \
+			/usr/sbin/vgcfgbackup, \
+			/usr/sbin/vgdisplay, \
+			/usr/sbin/vgremove, \
+			/usr/sbin/lvcreate, \
+			/usr/sbin/lvmerge, \
+			/usr/sbin/lvsync, \
+			/usr/bin/passwd, \
+			/usr/sbin/insf, \
+			/usr/sbin/pvmove, \
+			/usr/bin/cpio, \
+			/usr/bin/mkgroup, \
+			/usr/bin/chgrp, \
+			/usr/sbin/chdev, \
+			/usr/openv/netbackup/bin/bplist, \
+			/usr/bin/model, \
+			/usr/sbin/parstatus, \
+			/usr/bin/chage, \
+			/opt/ignite/bin/make_net_recovery, \
+			/usr/bin/unlock, \
+			/usr/bin/uncompress, \
+			/usr/bin/chmod, \
+			/usr/contrib/bin/gunzip, \
+			/usr/sbin/lv*, \
+			/usr/sbin/inetd -s, \
+			/usr/sbin/mklv, \
+			/usr/sbin/chvg, \
+			/usr/bin/datapath, \
+			/usr/sbin/migratelp, \
+			/usr/sbin/exportvg, \
+			/usr/sbin/rmlv, \
+			/usr/sbin/lquerylv, \
+			/usr/sbin/chpath, \
+			/usr/bin/startsrc, \
+			/usr/bin/rm, \
+			/bin/entstat, \
+			/usr/sbin/bootinfo, \
+			/usr/sbin/shutdown, \
+			/usr/sbin/instfix, \
+			/usr/bin/mkszfile, \
+			/usr/bin/pwdck, \
+			/usr/bin/which, \
+			/usr/bin/mt, \
+			/usr/bin/mkdir, \
+			/usr/bin/cat, \
+			/usr/bin/svcs, \
+			/usr/sbin/vgcfgrestore, \
+			/usr/sbin/vgexport, \
+			/usr/sbin/vgscan, \
+			/usr/sbin/lvdisplay, \
+			/usr/sbin/lvmmigrate, \
+			/usr/sbin/lvreduce, \
+			/usr/sbin/mount, \
+			/usr/sbin/pvchange, \
+			/usr/sbin/pvremove, \
+			/usr/sbin/backup, \
+			/usr/sbin/chfs, \
+			/etc/route, \
+			/usr/sbin/vmo, \
+			/usr/sbin/swlist, \
+			/usr/sbin/lanscan, \
+			/usr/bin/strings, \
+			/usr/bin/getconf, \
+			/usr/sbin/cmviewcl, \
+			/usr/bin/mv, \
+			/usr/bin/gzip, \
+			/usr/bin/crontab, \
+			/usr/sbin/pv*, \
+			/usr/sbin/devfsadm, \
+			/usr/sbin/crfs, \
+			/usr/sbin/chpv, \
+			/usr/sbin/unmirrorvg, \
+			/usr/sbin/mklvcopy, \
+			/usr/sbin/importvg, \
+			/usr/bin/fcstat, \
+			/usr/bin/sar, \
+			/etc/ifconfig, \
+			/usr/sbin/diag, \
+			/usr/bin/ps, \
+			/usr/sbin/lsattr, \
+			/usr/sbin/halt, \
+			/usr/bin/mktcpip, \
+			/usr/sbin/syncvg, \
+			/usr/sbin/reducevg, \
+			/usr/sbin/mount, \
+			/usr/sbin/iostat, \
+			/usr/sbin/fsck, \
+			/usr/sbin/format, \
+			/usr/sbin/svcadm, \
+			/usr/sbin/vgchange, \
+			/usr/sbin/vgextend, \
+			/usr/sbin/vgsync, \
+			/usr/sbin/lvextend, \
+			/usr/sbin/lvremove, \
+			/usr/sbin/fsadm, \
+			/opt/ignite/bin/make_tape_recovery, \
+			/usr/sbin/pvck, \
+			/usr/lbin/getprpw, \
+			/usr/sbin/restore, \
+			/usr/sbin/umount, \
+			/usr/bin/startsrc, \
+			/usr/sbin/ioo, \
+			/usr/bin/ipcs, \
+			/usr/sbin/cfgadm, \
+			/usr/sbin/lscfg, \
+			/usr/sbin/reboot, \
+			/usr/bin/pwdadm, \
+			/usr/sbin/dmesg, \
+			/usr/bin/gunzip, \
+			/usr/bin/pkginfo, \
+			/usr/sbin/rmdev, \
+			/usr/sbin/rmlvcopy, \
+			/usr/bin/entstat, \
+			/usr/sbin/groupadd, \
+			/opt/SUNWexplo/bin/explorer, \
+			/usr/sbin/lsuser
+# Assigned To group
+#IBM_yourAppName_BAU  yourAppName_HOSTS = IBM_yourAppName_BAU_CMDS                      
+IBM_UL2_BAU ALL=(root) NOPASSWD:IBM_CL2_BAU_CMDS, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+
+# End  AIRTEL UNIX-ADMIN standard template Ver 1.0 Date yyyy-mm-dd    * Master * Refer xxxxx-unapproved- End #

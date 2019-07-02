@@ -1,0 +1,51 @@
+---
+- name: Asm creation play
+  hosts: oracle
+  tasks:
+
+    - name: created partitions 1
+      parted:
+        device: "{{ ASM_DISK_USE }}"
+        number: "{{ asm_disks.asm_disk1.PARTITION }}"
+        part_end: "{{ asm_disks.asm_disk1.SIZE_ASM }}GiB"
+        state: present
+
+    - name: created partitions 2
+      parted:
+        device: "{{ ASM_DISK_USE }}"
+        number: "{{ asm_disks.asm_disk2.PARTITION }}"
+        part_start: "{{ asm_disks.asm_disk1.SIZE_ASM }}GiB"
+        part_end: "{{ ( asm_disks.asm_disk2.SIZE_ASM | int) + ( asm_disks.asm_disk1.SIZE_ASM | int) }}GiB"
+        state: present 
+
+
+    - name: created partitions 3
+      parted:
+        device: "{{ ASM_DISK_USE }}"
+        number: "{{ asm_disks.asm_disk3.PARTITION }}"
+        part_start: "{{ ( asm_disks.asm_disk2.SIZE_ASM | int) + ( asm_disks.asm_disk1.SIZE_ASM | int) }}GiB"
+        part_end: "{{ ( asm_disks.asm_disk2.SIZE_ASM | int) + ( asm_disks.asm_disk3.SIZE_ASM | int) + ( asm_disks.asm_disk1.SIZE_ASM | int) }}GiB"
+        state: present 
+
+    - name: created ASM disks
+      shell: "/sbin/oracleasm init"
+
+    - name: created ASM disks step2
+      shell: "/sbin/oracleasm createdisk {{ item.value.Devname }} {{ item.value.Disk_Use }}"
+      with_dict: "{{ asm_disks }}"
+
+    - name: send the oracleasm config file
+      copy:
+        src: "files/oracleasm"
+        dest: /etc/sysconfig/oracleasm-_dev_oracleasm
+        owner: root
+        group: root
+        mode: 0644
+      notify: asm_service_restart
+   
+
+  handlers:
+    - name: asm_service_restart
+      systemd: name=oracleasm state=restarted enabled=true
+
+

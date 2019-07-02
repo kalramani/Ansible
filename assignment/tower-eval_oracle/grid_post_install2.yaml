@@ -1,0 +1,10 @@
+---
+- name: post scripts execution via grid
+  hosts: oracle
+  tasks:
+    - name: execute script1
+      shell: "/u01/app/grid/product/12.1.0/grid/cfgtoollogs/configToolAllCommands RESPONSE_FILE=/u01/software/grid/response/grid.rsp"
+      ignore_errors: True
+
+    - name: execute script2
+      shell: "/u01/app/grid/product/12.1.0/grid/bin/asmca -silent -configureASM -sysAsmPassword sysPassw0rd -asmsnmpPassword asmsnmpPassw0rd -diskString '{{ ORACLE_INSTALL_ASM_diskGroup_diskDiscoveryString }}' -diskGroupName {{ ORACLE_INSTALL_ASM_diskGroup_name }} -disk '{{ ORACLE_INSTALL_ASM_diskGroup_ddisk }}' -redundancy {{ ORACLE_INSTALL_ASM_diskGroup_redundancy }}"

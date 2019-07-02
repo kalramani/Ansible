@@ -1,0 +1,1 @@
+snow_user ALL=(root) NOPASSWD: /usr/sbin/dmidecode,/usr/sbin/lsof,/usr/bin/fdisk -l,/usr/bin/dmsetup table,/usr/bin/dmsetup ls,/sbin/multipath,/usr/sbin/vxdmpadm

@@ -1,0 +1,1 @@
+tickuser ALL=(root) NOPASSWD: /sbin/service,/etc/telegraf

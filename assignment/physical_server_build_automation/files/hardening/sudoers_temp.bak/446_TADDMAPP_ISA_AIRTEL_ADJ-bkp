@@ -1,0 +1,86 @@
+# Begin NA TADDM Application standard template Ver 1.1  Date 2016-09-20  #
+# Description : TADMUSER_TOOL_TEMPLATE  USER_ID : tadmuser
+#
+# Software products and versions
+# Supported OS platforms
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates except Special for groups ABC, DEF and MNO only
+#
+# Version control
+#       v1.1 foxworth@us.ibm.com  - changed group names to 8 characters or less to comply with AIX; 
+#                         add gzip and tar negations, misc. changes.  Details:
+# + User_Alias IBM_GCMSPA_ADM = %gcmsmnt   # NOTE: A different group MUST be used for the _ADM commands.
+# - User_Alias IBM_GCMSPA_ADM = %ibm_gcmspa_ADM  # Note, a different group MUST be used for the _ADM commands.
+# + Cmnd_Alias IBM_GZIP_TADDM_NEG = !/bin/gzip  /* *,!/bin/gzip *..*, !/bin/gzip *./*,  \
+# + Cmnd_Alias IBM_TAR_TADDM_NEG = !/bin/tar * /* * /* *,!/bin/tar *..*, !/bin/tar *./*,  \
+# + Cmnd_Alias IBM_NEGATE_CM = IBM_CHMOD_TADDM_NEG, IBM_CHOWN_TADDM_NEG, IBM_RM_TADDM_NEG, IBM_MKDIR_TADDM_NEG, IBM_TAR_TADDM_NEG, IBM_GZIP_TADDM_NEG
+# - Cmnd_Alias IBM_NEGATE_CM = IBM_CHMOD_TADDM_NEG,IBM_RM_TADDM_NEG,IBM_MKDIR_TADDM_NEG
+# - IBM_GCMSCM_BAU TADDM_APPLICATION_HOSTS = NOPASSWD: IBM_GCMSCM_BAU_CMD2,IBM_CHOWN_TADDM_NET
+# + IBM_GCMSCM_BAU TADDM_APPLICATION_HOSTS = NOPASSWD: IBM_GCMSCM_BAU_CMD2, IBM_NEGATE_CM
+# +                               /bin/cd /opt/IBM/ldap/*, \
+# -                     		/bin/cd /opt/IBM/ldap/V6.1, \
+# +                               /opt/IBM/ldap/*/bin/ibmdirctl, \
+# +                               /opt/IBM/ldap/*/sbin/idsdiradm, \
+# -                      		/opt/IBM/ldap/V6.1/bin/ibmdirctl,\
+# -                      		/opt/IBM/ldap/V6.1/sbin/idsdiradm,\
+# + 		                !/usr/bin/gzip  /* *,!/usr/bin/gzip *..*, !/usr/bin/gzip *./*
+# + 		                !/usr/bin/tar * /* * /* *,!/usr/bin/tar *..*, !/usr/bin/tar *./*
+# -                         	/opt/gcms/dbq_pkg/bst/bin/*, \
+# -                          	/opt/TIV/taddm/dist/bin/BulkLoad.sh, \
+# -                          	/opt/TIV/taddm/dist/bin/loadidml.sh, \
+# -                          	/opt/TIV/taddm/dist/bin/loadscope.jy, \
+#       v1.1.1 highc@us.ibm.com - missed recording the approval designation
+#                    in the # Begin/End comments, added.
+
+#
+# Begin NA TADDM Application standard template Ver 1.1  Date 2014-09-05  * BAU * Refer NA14248014  Begin #
+#
+#A- Standard BAU sudo entries:
+# Requires that sudoedit be enabled
+# Requires that group gcmspa exist on server and managed by TADDM Owner
+#   Adjust to actual group names if required for local circumstances:
+#
+
+#User_Alias IBM_GCMSCL_BAU = %gcmscl
+#User_Alias IBM_GCMSCM_BAU = %gcmscm
+#User_Alias IBM_GCMSPA_BAU = %gcmspa
+
+
+User_Alias IBM_GCMSPA_ADM = tadmuser   # NOTE: A different group MUST be used for the _ADM commands.
+                                       #       This group will ONLY be populated as needed during install/problem/change,
+                                       #       then emptied again after 'triggering event.'
+
+#Host_Alias TADDM_DB2_HOSTS = ALL          # In this case, we want this defined on all hosts, indicate subsets as appropriate.
+#Host_Alias TADDM_APPLICATION_HOSTS = ALL  # In this case, we want this defined on all hosts, indicate subsets as appropriate.
+#Host_Alias TADDM_ALL_HOSTS = TADDM_DB2_HOSTS,TADDM_APPLICATION_HOSTS
+
+Cmnd_Alias IBM_GCMSPA_ADM_CMD = \
+		/usr/sbin/lsof, \
+		/bin/entstat, \
+		/usr/sbin/prtconf, \
+		/usr/sbin/dmidecode, \
+		/usr/sbin/sneep, \
+		/usr/sbin/cstm, \
+		/home/tadmuser/collectionengine-aix-powerpc, \
+		/home/tadmuser/collectionengine-solaris-sparc, \
+		/home/tadmuser/collectionengine-hpux-parisc, \
+		/home/tadmuser/collectionengine-linux-x86, \
+		/etc/rc.d/rc2.d/SBESClientd, \
+		/etc/rc.d/rc2.d/SBESClientd stop, \
+		/etc/rc.d/rc2.d/SBESClientd start, \
+		/etc/rc.d/rc2.d/SBESClientd restart, \
+		/etc/init.d/besclient, \
+		/etc/init.d/besclient stop, \
+		/etc/init.d/besclient start, \
+		/etc/init.d/besclient restart, \ 
+		/usr/bin/cat /var/opt/BESClient/__BESData/__Global/Logs, \
+		/usr/bin/cat /var/opt/BESClient/[!..]/*, \
+		/usr/bin/mv /var/opt/BESClient/[!..]/*, \
+		/usr/bin/cat /dev/null, \
+		/usr/bin/cp /var/opt/BESClient/[!..]/*
+
+IBM_GCMSPA_ADM ALL=(root) NOPASSWD:IBM_GCMSPA_ADM_CMD, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+# End NA TADDM Application standard template Ver 1.1.1  Date 2016-09-20  * Master * Refer NA14248014  End #

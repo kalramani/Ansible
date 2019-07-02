@@ -1,0 +1,94 @@
+# Begin  NA System Admin Ver 1.0   Date 2015-05-29  
+# Description
+# Software products and versions
+# Supported OS platforms : All Unix/Linux variants.
+# This sudo profile is the 'typical' system admin sudo entry
+# where secondary logging is in use.  This entry is only to
+# be used where secondary logging 'like' the methods
+# documented on: https://ibm.biz/NAsudo2log
+# are in use.  Implementing team is responsible to ensure 
+# logging methodology works in their environment.  If secondary 
+# logging is not in use, then the SA team must request an
+# 'account-level'override exception.
+#
+# Self serve access considerations are 'Not applicable' for this template
+#
+#
+# Use of this IBM approved standard template must follow NA 
+# Sudo deployment requirements.
+# Local adjustments, excepting the Host_Alias (For any needed
+# segregation of hosts)  and User_Alias (to identify the local
+# group name in use) for specific customer environments
+# must be approved by 'Sudo Deployment AG/Hartford/IBM'
+# 
+#
+# Version control
+# V1.0 - highc@us.ibm.com - new template
+# V1.1 - highc - add IBM_SA_AIXSMIT materials to allow for system
+# 		system admins to use smit with appropriate logging.
+# V1.2 - highc - based on v7.1 of standard aliases https://ibm.biz/GsudoStdAlias
+#               being released,remove 'EXEC: smit' type lines.
+#               Be certain to include the SMIT_SHELL=n materials from
+#               v7.1 of the standard aliases on AIX systems. 
+# V1.2.1 - highc- fix syntax/line continuation error. 
+# V1.2.2 - highc- adjust user alias to better conform to global standard.
+# 
+
+# User Aliases
+#
+# Replace sample group names with real group names for your account.
+
+# The User_Alias name IBM_SA to identify the Alias as the
+# System Admin alias for IBM owned ID's.
+#
+
+User_Alias     IBM_SA_FULL = unmgr007,cyadmdu,arcos_root,balipat1,balipat2
+	       # replace %unixinfr with the
+               # -group- that contains the account specific IBM
+               # System Administrator team personal or GIAMA ID's. 
+               # DO NOT use this group for customer owned ID's.
+               # Note:  It is permissible to comment out this line
+               # and place IBM_SA_BAU directly into the sudoers file
+               # to reference the local group.  This may save
+               # effort in the future.
+
+#--------------------------------------------------------------------------------
+# Host Aliases 
+#
+#Host_Alias    IBM_SA_HOSTS = ALL # In this template, we assume all
+              # systems are managed by the IBM SA team.
+              # Indicate a subset of systems if not all will be
+              # managed by the same IBM team.
+
+# Disallowed editors, this should ONLY be used as part of a negation, eg:  !IBM_NONE_EDITOR
+# Special note regarding !IBM_NONE_EDITOR.  On RH V4 and older, 
+# it is permissible to allow these editors via a NOEXEC as V4
+# does not support sudoedit.  Best practice is to use a host
+# alias to 'segregate' the older RH platforms.
+
+
+# --------------Do not change anything below this line. ------------------
+#
+#--------------------------------------------------------------------------------
+#
+# IBM System Admin command Aliases
+#        
+
+
+# Use of NOPASSWD is permitted only by approved exception per
+# sso management for sudo entries intended for manual, interactive
+# usage.  Ask for exception on 'account-level' override via
+# 'Sudo Deployment AG/Hartford/IBM'
+IBM_SA_FULL IBM_SA_HOSTS = NOPASSWD:ALL,!IBM_NONE_SA,!IBM_SHELLS_ALL, IBM_UNIX_SA_CMDS,\
+          NOEXEC: IBM_SHELLESCAPE_ALL,!IBM_NONE_EDITOR
+		
+#
+
+# Begin  NA System Admin Ver 1.0   Date 2014-06-02  * Maintenance * Refer NA1001415401 Begin #
+# Description
+
+#---------------[ No change window section ]------------------#
+
+# End   NA System Admin Ver 1.0   Date 2014-06-02  * Maintenance * Refer NA100141401 Begin #
+
+# End  NA System Admin Ver 1.2.2   Date 2014-07-15  * Master * Refer NA1001415501 End #

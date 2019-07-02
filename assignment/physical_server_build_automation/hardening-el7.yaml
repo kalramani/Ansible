@@ -1,0 +1,221 @@
+---
+- name: vmpost deploy task before hardening
+  hosts: tower 
+  gather_facts: no
+  tasks:
+    - name: adding host to inventory
+      add_host:
+        name: "{{ IPADDR }}"
+        group: provision_grp
+
+- name: Airtel RHEL 7 OS Hardening
+  hosts: provision_grp
+  become: yes
+  become_method: sudo
+  become_user: root
+  roles:
+    - grub_cmdline 
+    - pam-pwquality 
+  vars:
+    pam_pwquality_dcredit: 1
+    pam_pwquality_difok: 8
+    pam_pwquality_gecoscheck: 1
+    pam_pwquality_lcredit: 1
+    pam_pwquality_maxrepeat: 4
+    pam_pwquality_maxclassrepeat: 4
+    pam_pwquality_minclass: 4
+    pam_pwquality_minlen: 8
+    pam_pwquality_ocredit: 1
+    pam_pwquality_ucredit: 1
+    grub_cmdline_add_args:
+      - ipv6.disable=1
+      - crashkernel=auto
+      - "{{ grub_cmdline_bios_args }}"
+  tasks:
+#  - name: Check if ipv6 already disabled
+#    shell: grep 'ipv6.disable' /etc/default/grub
+#    register: test_ipv6
+
+#  - name: Disable ipv6
+#    replace: 
+#      dest: /etc/default/grub
+#      regexp: 'quiet' 
+#      replace: 'quiet ipv6.disable=1'
+#    when: test_ipv6.stdou != ""
+#    notify:
+#      Create grub2.cfg
+
+  - name: Get Default target/runlevel
+    shell: systemctl get-default
+    register: defaultTarget
+    changed_when: false
+
+  - include: "common/yum.yaml"
+  - include: "common/yum-repo.yaml"
+
+  - debug:
+      var: defaultTarget
+
+  - name: Set Default target to multi-user.target
+    shell: systemctl set-default multi-user.target
+    when: defaultTarget.stdout != "multi-user.target"
+  
+  - name: Disable GNOME Automounting
+    shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type bool --set /desktop/gnome/volume_manager/automount_media false && gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type bool --set /desktop/gnome/volume_manager/automount_drives false"
+    when: defaultTarget.stdout == "graphical.target" and not ansible_check_mode
+
+  - name: Set permission of /etc/{passwd,group}
+    file: path={{ item }} owner=root group=root mode=0644
+    with_items:
+      - /etc/passwd
+      - /etc/group
+
+  - name: Set permission of /etc/{shadow,gshadow}
+    file: path={{ item }} owner=root group=root mode=0000
+    with_items:
+      - /etc/shadow
+      - /etc/gshadow
+
+  - name: Disable reboot/shutdown for other users
+    file: path={{ item }} owner=root group=root mode=0500
+    with_items:
+      - /usr/bin/consolehelper
+      - /usr/bin/systemctl
+    ignore_errors: yes 
+
+  - name: Configure /etc/ssh/sshd_config
+    template: src=hardening/sshd_config dest=/etc/ssh/sshd_config owner=root group=root mode=0600
+    notify:
+     - restart sshd
+
+  - name: Remove /etc/cron.deny
+    file: path=/etc/cron.deny state=absent
+  
+  - name: add root in /etc/cron.allow
+    copy: dest=/etc/cron.allow content="root" owner=root group=root mode=0644
+  
+  - name: Ensure crond is running/enabled
+    service: name=crond state=started enabled=yes
+
+  - name: Set permission of /etc/crontab
+    file: path={{ item }} owner=root group=root mode=0600
+    with_items:
+      - /etc/crontab
+  - name: Get pam file list
+    shell: ls -l /var/spool/cron
+    register: cron_list
+    changed_when: false
+
+  - name: Set permission of /var/spool/cron
+    file: path={{ item }} owner=root group=root recurse=no mode=0700
+    with_items:
+      - /var/spool/cron
+
+  - name: Set permission of /etc/cron*
+    file: path={{ item }} owner=root group=root recurse=yes mode=0600
+    with_items:
+      - /etc/cron.hourly
+      - /etc/cron.daily
+      - /etc/cron.weekly
+      - /etc/cron.monthly
+      - /etc/cron.d
+      - "{{ cron_list.stdout }}" 
+
+  - name: Install required Packages
+    yum: name={{ item }} state=present
+    ignore_errors: yes
+    with_items:
+      - telnet
+      - kexec-tools
+      - vim
+      - curl
+      - sysstat
+      - numad
+      - numactl
+      - net-tools
+      - tcpdump
+      - irqbalance
+      - tuned
+      - perf
+      - strace
+      - psacct
+      - bc
+
+  - name: Ensure psacct is running/enabled
+    service: name=psacct state=started enabled=yes masked=no
+
+  - name: Disable Selinux
+    selinux: policy=targeted state=disabled
+
+
+  - name: Update the system with Latest patch
+    yum: 
+      name: "*"
+      state: latest
+
+  - name: Mask unwanted Services
+    systemd: name={{ item }} state=stopped enabled=no masked=yes
+    with_items:
+      - NetworkManager.service
+      - chronyd.service
+      - ctrl-alt-del.target
+      - firewalld.service
+      - iptables.service
+      - NetworkManager-wait-online.service
+      - avahi-daemon.service
+      - avahi-daemon.socket
+      - microcode.service
+      - rpcbind.target
+      - kdump.service
+      - auditd.service
+      - postfix.service
+    ignore_errors: yes
+
+  - include: "common/login_defs.yaml"
+  - include: "common/ntp.yaml"
+  - include: "common/issue.yaml"
+#  - include: "common/motd.yaml"
+  - include: "common/profile.yaml"
+  - include: "common/history.yaml"
+  - include: "common/sysctl.yaml"
+  - include: "common/arcos.yaml"
+  - include: "rhel7/pam_new.yaml"
+  - include: "common/multipath.yaml"
+#  - include: "common/zenoss.yaml"
+  - include: "common/service-now.yaml"
+#  - include: "common/tickuser.yaml"
+  - include: "common/ibm_extra.yaml"
+  - include: "common/passexpiry.yaml"
+#  - include: "rhel7/yum-7.4.yaml"
+  - include: "common/securetty.yaml"
+  - include: "common/userlock.yaml" 
+  - include: "common/unmgr.yaml"
+  - include: "common/bluetooth.yaml"
+#  - name: Update the {{ item }}
+#    yum: 
+#      name: "{{ item }}"
+#      state: latest
+#      enablerepo: rhel-7.4
+#    with_items:
+#      - systemd
+#      - openssh*
+
+  handlers:
+   - name: Restart NTP
+     systemd: name=ntpd masked=no  state=restarted enabled=true
+
+   - name: restart sshd
+     systemd: name=sshd masked=no  state=restarted enabled=true
+
+   - name: reload sysctl.conf
+     command: /sbin/sysctl -p
+
+   - name: flush routes
+     command: /sbin/sysctl -w net.ipv4.route.flush=1
+
+   - name: Restart Multipath
+     systemd: name=multipathd masked=no  state=restarted enabled=true
+
+
+
+

@@ -1,0 +1,11 @@
+---
+- name: Master play
+  gather_facts: no
+  hosts: utilitynode
+  vars:
+    iso_to_pick: "{{ OSVER }}.iso"
+  tasks:
+    - include: customiso.yml
+    - include: custksbuild.yml
+    - include: generate_iso.yml
+    - include: cleanup.yml

@@ -1,0 +1,45 @@
+---
+    - name: generate ks from template
+      template: 
+        src: ks.cfg.j2
+        dest: /data/isodata/ks.cfg
+        owner: root
+        group: root
+        mode: 0644    
+
+    - name: generate ks from template
+      template:
+        src: ks.cfg.j2
+        dest: /var/www/html/ksfiles/ks_{{ IPADDR }}.cfg
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: update the isolinux to use ks
+      lineinfile:
+        path: /data/isodata/isolinux/isolinux.cfg
+        regexp: '^(  append .*x86_64 quiet$)'
+        line: '\1 net.ifnames=0 biosdevname=0 ks=cdrom:/ks.cfg' 
+        backrefs: True
+        state: present
+
+    - name: remove menu default from media check
+      lineinfile:
+        path: /data/isodata/isolinux/isolinux.cfg
+        regexp: '^(  menu default$)'
+        state: absent
+
+    - name: update the isolinux to use ks
+      lineinfile:
+        path: /data/isodata/isolinux/isolinux.cfg
+        regexp: '^timeout 600'
+        line: 'timeout 60'
+        state: present
+
+
+    - name: add menu default to install
+      lineinfile:
+        path: /data/isodata/isolinux/isolinux.cfg
+        line: '  menu default'
+        insertafter: 'label linux'
+        state: present

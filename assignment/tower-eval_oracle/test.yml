@@ -1,0 +1,46 @@
+---
+- name: Reboot the server
+  hosts: oracle
+  gather_facts: false
+  tasks:
+#    - name: reboot the server
+#      shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+#      async: 1
+#      poll: 0
+#      become: true
+#      ignore_errors: true
+
+    - name: wait for server to come online
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 22
+        state: started
+        delay: 20
+        timeout: 900
+      delegate_to: localhost
+      register: test
+      become: false
+
+    - name: print message
+      debug: 
+        msg: Not Running
+      when: test.state != "started"
+
+#- name: test debuging
+#  hosts: localhost
+#  become: false
+#  gather_facts: false
+#  vars:
+#    oracle_group:
+#      oinstall: 54321
+#      dba: 54322
+#      asmdba: 543223
+#      asmoper: 54324
+#  tasks:
+#    - name: check debug
+#      debug:
+#        msg: " {{ oracle_group.oinstall }} "
+##      with_dict: "{{ oracle_group }}" 
+##     loop_control:
+##        loop_var: groups
+##      when: groups.key == "oinstall"

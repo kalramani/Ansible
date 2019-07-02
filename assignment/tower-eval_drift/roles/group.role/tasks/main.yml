@@ -1,0 +1,7 @@
+---
+- name: Group Creation
+  group:
+    name: "{{ item.group }}"
+    gid: "{{ item.gid|default(omit) }}"
+    state: "{{ item.state }}"
+  with_items: "{{ sysgrps }}"

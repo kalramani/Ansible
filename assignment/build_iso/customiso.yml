@@ -1,0 +1,30 @@
+---
+    - name: check iso availability
+      stat:
+        path: /data/{{ iso_to_pick }}
+      register: iso_check
+      failed_when: iso_check.stat.exists == False
+
+    - name: create dir structure
+      file:
+        path: "{{ item }}"
+        mode: 0755
+        owner: root
+        group: root
+        recurse: true
+        state: directory
+      with_items:
+        - /data/isodata
+        - /data/isomount
+
+    - name: mount the iso image
+      mount:
+        path: /data/isomount
+        src: /data/{{ iso_to_pick }}
+        state: mounted
+        fstype: "iso9660"
+        
+    - name: copy the content of iso to dir
+      shell: 'cp -aivprf /data/isomount/* /data/isodata/'
+      register: copy_stat
+

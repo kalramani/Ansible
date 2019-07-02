@@ -1,0 +1,105 @@
+# Begin  Customer yourAppName standard template Ver 1.1 Date 2016-09-20  #
+# Description : BACKUP_L1 USER_ID : cybkpul1 
+#
+# Software products and versions
+# Supported OS platforms - 
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control
+# V1.0 - shortname@us.ibm.com - put your shortname and  correct country code
+#          plus any comments you want included into the sudoers file.
+#
+# 
+# <:NA notes- rename this file to your application name, ensure you keep it a
+#      'pure' unix text file, otherwise it may not work right when #included.
+#      Recommend use of VIM to edit:  
+#      Reminder when replacing 'yourAppName' below, use all CAPS, that is 
+#      syntatically required by sudo. >
+#
+#=====================================================================================
+#
+# Replace sample group names with real group names for your account
+# 
+User_Alias      IBM_UBKPL1_BAU = cybkpul1 
+
+#User_Alias      IBM_yourAppName_ADM = %admgrp # Use only if you have a 'type B'
+                    # sudo entry, otherwise delete.  If used, it MUST be a 
+                    # different group then used for the IBM_*_BAU entry, and 
+                    # will normally be empty.  ID Admin will populate this
+                    # group during change windows/problem event, then empty
+                    # the group when the event is complete.
+
+#Host_Alias     yourAppName_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# -----Do not change anything below this line, excepting to replace ----------
+# -----         <:path *> content with local pathing.       ------------------
+#
+Cmnd_Alias IBM_CBKPL1_BAU_CMDS = \
+		/usr/openv/volmgr/bin/vmcheckxxx, \
+		/usr/openv/volmgr/bin/vmupdate, \
+		/usr/openv/netbackup/bin/admincmd/test, \
+		/usr/openv/netbackup/bin/admincmd/activetest, \
+		/usr/openv/netbackup/bin/admincmd/bpimmedia, \
+		/usr/openv/netbackup/bin/admincmd/nbstlutil, \
+		/usr/openv/netbackup/bin/admincmd/plist, \
+		/usr/openv/java/jbpSA, \
+		/usr/bin/errpt, \
+		/usr/sbin/lsattr, \
+		/usr/bin/traceroute, \
+		!/usr/bin/gzip *[\:space\:]/* *, \
+		!/usr/bin/cp *[\:space\:]/* *, \
+		/usr/openv/volmgr/bin/vmd, \
+		/usr/openv/volmgr/bin/vmps, \
+		/usr/openv/netbackup/bin/bprestore, \
+		/usr/openv/netbackup/bin/admincmd/bpimagelist, \
+		/usr/openv/netbackup/bin/admincmd/BackupScrOutput, \
+		/usr/bin/ls, \
+		/usr/bin/uptime, \
+		/usr/bin/lssrc, \
+		/usr/sbin/lsvg, \
+		/usr/bin/ps, \
+		!/*/gzip *./*, \
+		!/*/cp *./*, \
+		/usr/openv/volmgr/bin/ltid, \
+		/usr/openv/netbackup/bin/admincmd/bperror, \
+		/usr/openv/java/jnbSA, \
+		/usr/sbin/lsdev, \
+		/usr/bin/vmstat, \
+		/usr/bin/netstat, \
+		/usr/sbin/lslv, \
+		!/*/gzip *..*, \
+		!/*/cp *..*, \
+		/usr/openv/netbackup/bin/admincmd/bppllist, \
+		/usr/openv/volmgr/bin/tpclean, \
+		/usr/openv/volmgr/bin/vmquery, \
+		/usr/bin/topas, \
+		/usr/bin/du, \
+		/usr/bin/telnet, \
+		/usr/sbin/lsps, \
+		!/usr/bin/guzip *[\:space\:]/* *, \
+		/usr/sbin/lscfg, \
+		/usr/bin/lsuser, \
+		!/*/gunzip *..*, \
+		!/*/gunzip *./*, \
+		/usr/bin/sudoedit /usr/tivoli/tsm/client/ba/bin64/dsm.sys, \
+		/usr/bin/sudoedit /usr/tivoli/tsm/client/ba/bin/dsm.sys, \
+		/usr/bin/sudoedit /usr/tivoli/tsm/client/ba/bin64/dsm.opt, \
+		/usr/bin/sudoedit /usr/tivoli/tsm/client/ba/bin/dsm.opt, \
+		/usr/tivoli/tsm/client/ba/bin/dsmc, \
+		/usr/tivoli/tsm/client/ba/bin64/dsmc, \
+		/usr/tivoli/tsm/client/ba/bin64/dsmadmc, \
+		/usr/tivoli/tsm/server/bin/dsmadmc, \
+		/usr/tivoli/tsm/server/bin/export DSMSERV_DIR\=/, \
+		/usr/tivoli/tsm/tsm_scripts/report_optionset.ksh, \
+		/usr/bin/dsm, \
+		/usr/bin/dsmadmc, \
+		/usr/bin/dsmc *, \
+		/usr/tivoli/tsm/client/ba/* 
+# Assigned To group
+#IBM_yourAppName_BAU  yourAppName_HOSTS = IBM_yourAppName_BAU_CMDS                      
+IBM_UBKPL1_BAU ALL=(root) NOPASSWD:IBM_CBKPL1_BAU_CMDS, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+# End  AIRTEL BACKUP-ADMIN standard template Ver 1.0 Date yyyy-mm-dd    * Master * Refer xxxxx-unapproved- End #

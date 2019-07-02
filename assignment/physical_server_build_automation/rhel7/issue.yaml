@@ -1,0 +1,8 @@
+---
+
+- name: Set Banner
+  template: src=hardening/issue
+        dest=/etc/issue
+        owner=root
+        group=root
+        mode=0644

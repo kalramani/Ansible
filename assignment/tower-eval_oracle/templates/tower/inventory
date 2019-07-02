@@ -1,0 +1,4 @@
+[{{ group_name }}]
+{% for host in mycloud_inventory %}
+{{ host }}
+{% endfor %}

@@ -1,0 +1,17 @@
+---
+- name: lock all system user
+  shell: "/sbin/usermod -L {{ item }}; /sbin/usermod -s /sbin/nologin {{ item }}"
+  ignore_errors: yes
+  with_items:
+    - bin
+    - daemon
+    - adm
+    - lp
+    - sync
+    - shutdown
+    - halt
+    - mail
+    - operator
+    - games
+    - ftp
+    - nobody

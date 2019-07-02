@@ -1,0 +1,15 @@
+---
+- name: Asm creation play
+  hosts: oracle
+  tasks:
+    - name: listener file copy
+      template:
+        src: oracle/listener.ora.j2
+        dest: /u01/app/grid/product/12.1.0/grid/network/admin/listener.ora
+        owner: grid
+        group: oinstall
+        mode: 0644
+        backup: yes
+
+    - name: listener creation
+      shell: "/u01/app/grid/product/12.1.0/grid/bin/srvctl modify LISTENER -p 1535"

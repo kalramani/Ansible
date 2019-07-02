@@ -1,0 +1,59 @@
+---
+- name: Oracle Configuration/Tuning - RHEL 7.x
+  hosts: oracle
+  tasks:
+    - name: DBVG volume group
+      lvg:
+        vg: "{{ dbvg_name }}"
+        pvs: "{{ disk_to_use }}"
+
+    - name: lvm creation
+      lvol:
+        vg: "{{ dbvg_name }}"
+        lv: "{{ mpoint.key }}"
+        size: "{{ mpoint.value }}"
+      with_dict: "{{ mount_points }}"
+      loop_control:
+        loop_var: mpoint
+
+
+    - name: create fs
+      filesystem:
+        fstype: xfs
+        dev: "/dev/{{ dbvg_name }}/{{ mpoint.key }}"
+      with_dict: "{{ mount_points }}"
+      loop_control:
+        loop_var: mpoint
+
+    - name: mount options
+      mount:
+        name: "/{{ mpoint.key }}"
+        src: "/dev/{{ dbvg_name }}/{{ mpoint.key }}"
+        fstype: xfs
+        state: mounted
+      with_dict: "{{ mount_points }}"
+      loop_control:
+        loop_var: mpoint
+
+    - name: change ownership of directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0775
+        owner: grid
+        group: oinstall
+      with_items:
+        - /u01
+        - /u01/software
+
+    - name: change ownership of directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0775
+        owner: oracle
+        group: oinstall
+      with_items:
+        - /u02
+        - /u02/software
+

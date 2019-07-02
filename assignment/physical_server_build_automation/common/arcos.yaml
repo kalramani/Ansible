@@ -1,0 +1,57 @@
+---
+- name: Add User 
+  user: name="{{ item }}" state=present password="{{ arcos_password }}"
+  with_items:
+    - arcos_user
+    - arcos_root
+    - tickuser
+    - unmgr007
+
+- name: Add User
+  user: name=tickuser state=present password="{{ tickuser_password }}"
+
+- name: Add User
+  user: name=unmgr007 state=present password="{{ unmgr007_password }}"
+
+- name: Set password expiry to Never for arcos_user
+  shell: "chage -M 180 arcos_user"
+
+- name: Set password expiry to Never for arcos_root
+  shell: "chage -M 180 arcos_root"
+
+- name: Set password expiry to Never for tickuser
+  shell: "chage -M 180 tickuser"
+
+- name: Disable file Immutable
+  command: chattr -i "{{ item }}"  
+  with_items:
+      - /etc/hosts.allow
+      - /etc/hosts.deny
+
+- name: Update /etc/hosts.deny
+  lineinfile: 
+     dest: '/etc/hosts.deny'
+     regexp: "^sshd"
+     line: 'sshd: ALL'
+     state: present
+
+- name: Update /etc/hosts.allow
+  lineinfile: 
+     dest: '/etc/hosts.allow'
+     regexp: "^sshd"
+     line: "{{ sshd_hosts_allow }}"
+     state: present
+
+- name: Make file Immutable
+  command: chattr +i "{{ item }}"  
+  with_items:
+      - /etc/hosts.allow
+      - /etc/hosts.deny
+
+- name: Update sudo rules for arcos_root
+  lineinfile: 
+     dest: '/etc/sudoers'
+     regexp: "^arcos_root"
+     line: "arcos_root   ALL=(ALL)      NOPASSWD: ALL"
+     state: present
+

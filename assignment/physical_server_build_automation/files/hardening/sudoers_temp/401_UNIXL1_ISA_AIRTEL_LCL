@@ -1,0 +1,97 @@
+# Begin  Customer yourAppName standard template Ver 1.0 Date yyyy-mm-dd  * Master * Refer xxxxx-unapproved- Begin #
+# Description <: complete this header>
+# Software products and versions
+# Supported OS platforms - 
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control
+# V1.0 - shortname@us.ibm.com - put your shortname and  correct country code
+#          plus any comments you want included into the sudoers file.
+#
+# 
+# <:NA notes- rename this file to your application name, ensure you keep it a
+#      'pure' unix text file, otherwise it may not work right when #included.
+#      Recommend use of VIM to edit:  
+#      Reminder when replacing 'yourAppName' below, use all CAPS, that is 
+#      syntatically required by sudo. >
+#
+#=====================================================================================
+#
+# Replace sample group names with real group names for your account
+# 
+User_Alias      IBM_UL1_BAU = cyadmul1 
+
+#User_Alias      IBM_yourAppName_ADM = %admgrp # Use only if you have a 'type B'
+                    # sudo entry, otherwise delete.  If used, it MUST be a 
+                    # different group then used for the IBM_*_BAU entry, and 
+                    # will normally be empty.  ID Admin will populate this
+                    # group during change windows/problem event, then empty
+                    # the group when the event is complete.
+
+#Host_Alias	yourAppName_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# -----Do not change anything below this line, excepting to replace ----------
+# -----         <:path *> content with local pathing.       ------------------
+#
+Cmnd_Alias IBM_CL1_BAU_CMDS = \
+	/usr/bin/sudo, \
+	/usr/local/bin/sudo, \
+	/usr/sbin/useradd, \
+	/usr/bin/cat /etc/passwd, \
+	/bin/cat /etc/passwd, \
+	/usr/bin/chuser, \
+	/sbin/pam_tally2, \
+	/usr/bin/faillog, \
+	/usr/bin/passwd, \
+	/usr/sbin/userdel, \
+	/bin/cat /etc/sudoers, \
+	/usr/bin/cat /etc/sudoers, \
+	/usr/bin/chpasswd, \
+	/usr/bin/chage, \
+	/usr/bin/cat \
+	/etc/group, \
+	/bin/cat \
+	/etc/group, \
+	/usr/sbin/usermod, \
+	/usr/xpg4/bin/id, \
+	/usr/bin/id, \
+	/usr/sbin/groupdel, \
+	/usr/bin/finger, \
+	/usr/sbin/lsuser, \
+	/home/cyadmul1/UsrAdd.scr, \
+	/usr/bin/chown, \
+	/home/cyadmul1/iam_extract_global.ksh, \
+	/usr/bin/chmod, \
+	/usr/bin/mkgroup, \
+	/usr/sbin/rmgroup, \
+	/usr/sbin/groupadd, \
+	/usr/bin/mailx, \
+	/bin/chmod, \
+	/usr/sbin/chpasswd, \
+	/bin/chown, \
+	/var/opt/BESClient/oracledb/iam_oracle_extract.ksh
+
+# Assigned To group
+#IBM_yourAppName_BAU  yourAppName_HOSTS = IBM_yourAppName_BAU_CMDS			
+IBM_UL1_BAU ALL=(root) NOPASSWD:IBM_CL1_BAU_CMDS, NOEXEC: IBM_SHELLESCAPE_ALL
+
+# Begin Customer yourAppName 1.0  Date yyyy-mm-dd  * Maintenance * Refer xxxxx-unapproved- Begin #
+# <:NA notes- If you do not need a 'Maintenance' type entry, you can simply 
+#      delete from the "Begin ... * Maintenance" line to the 
+#      "End ... * Maintenance" line. >
+
+# Available only during scheduled change/installation windows.
+
+#Cmnd_Alias	IBM_yourAppName_ADM_CMDS = \
+#   <:insert directory to be used in change>/command3, \
+#   /usr/bin/command4   # etc...
+ 
+#IBM_yourAppName_ADM  yourAppName_HOSTS = IBM_yourAppName_ADM_CMDS
+
+
+# End Customer yourAppName Ver 1.0  Date yyyy-mm-dd * Maintenance * Refer xxxxx-unapproved- End #
+
+# End  Customer yourAppName standard template Ver 1.0 Date yyyy-mm-dd    * Master * Refer xxxxx-unapproved- End 

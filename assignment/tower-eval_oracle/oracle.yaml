@@ -1,0 +1,239 @@
+---
+- name: Oracle Configuration/Tuning - RHEL 7.x
+  hosts: oracle
+  roles:
+    - grub_cmdline 
+  vars:
+    grub_cmdline_add_args:
+      - transparent_hugepage=never
+      - ipv6.disable=1 
+      - crashkernel="{% if  ansible_virtualization_role == 'guest' %}auto{% else %}768M{% endif %}"
+      - hugepages="{{ hugepages }}"
+      - numa=off
+      - "{{ grub_cmdline_bios_args }}"
+        
+  tasks:
+    - include: "rhel7/oracle-pre.yaml"
+
+    - name: Add Group "{{ groups.key }}"
+      group: 
+        name: "{{ groups.key }}"
+        gid: "{{ groups.value }}"
+      with_dict: "{{ oracle_groups }}"
+      loop_control:
+       loop_var: groups
+
+    - name: Add user oracle
+      user: 
+        name: oracle
+        uid: 54321
+        group: oinstall
+        groups:  dba,oper,asmdba,asmoper,backupdba,dgdba,kmdba
+        password: "{{ oracle_password }}"
+
+    - name: Add user grid
+      user: 
+        name: grid
+        uid: 54322
+        group: oinstall
+        groups:  dba,asmadmin,asmdba,asmoper
+        password: "{{ grid_password }}"
+
+    - name: Install Required pre-requisites rpms
+      yum: 
+        name:  "{{ item }}" 
+        state: present
+      with_items:
+        - binutils*
+        - bind*
+        - compat-libcap1
+        - gcc
+        - gcc-c++
+        - glibc
+        - glibc-devel
+        - ksh
+        - libgcc
+        - libstdc++
+        - libstdc++-devel
+        - libaio
+        - libaio-devel
+        - libXext
+        - libXtst
+        - libX11
+        - libXau
+        - libxcb
+        - libXi
+        - make
+        - sysstat
+        - libXmu
+        - libXt
+        - libXv
+        - libXxf86dga
+        - libdmx
+        - libXxf86misc
+        - libXxf86vm
+        - xorg-x11-utils
+        - xorg-x11-xauth
+        - nfs-utils
+        - bc
+        - oracleasm
+        - xterm*
+        - xclock
+        - xorg-x11-apps
+        - unzip
+        - elfutils-libelf-devel.x86_64
+        - tigervnc-server.x86_64
+        - jdk1.8.0_60.x86_64
+
+#    - name: copy the compat-libstdc rpm
+#      copy:
+#        src: "files/common/compat-libstdc++-33-3.2.3-72.el7.x86_64.rpm"
+#        dest: /var/tmp/
+        
+    - name: install rpm 
+      yum:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - "http://10.5.200.155/oraclesw/compat-libstdc++-33-3.2.3-72.el7.x86_64.rpm"
+        - "http://10.5.200.155/oraclesw/cvuqdisk-1.0.9-1.rpm"
+        - "http://10.5.200.155/oraclesw/oracleasmlib-2.0.12-1.el7.x86_64.rpm"
+        - "http://10.5.200.155/oraclesw/oracleasm-support-2.1.8-3.el7.x86_64.rpm"
+        - "http://10.5.200.155/oraclesw/kmod-oracleasm-2.0.8-8.el7.x86_64.rpm"
+
+    - name: add /dev/shm
+      mount: name=/dev/shm src=none fstype=tmpfs opts=defaults,size={{ shm_size }}G state=mounted
+
+    - name: Disable Selinux
+      selinux: policy=targeted state=disabled
+
+    - name: Set -x -g option in /etc/sysconfig/ntpd
+      lineinfile: 
+        dest: '/etc/sysconfig/ntpd'
+        regexp: "^OPTIONS="
+        line: 'OPTIONS="-x -g"'
+        state: present
+      notify:
+         - Restart NTP
+
+    - name: Set NOZEROCONF
+      lineinfile: 
+        dest: '/etc/sysconfig/network'
+        regexp: "^NOZEROCONF"
+        line: 'NOZEROCONF=yes'
+        state: present
+
+    - name: Disable avahi daemon
+      systemd: 
+        name: "{{ item }}" 
+        masked: yes  
+        state: stopped 
+        enabled: false
+      ignore_errors: yes
+      with_items:
+        - avahi-dnsconfd
+        - avahi-daemon
+
+    - name: Get MEM_LOCK Size
+      script: HugePageScript.sh
+      register: mem_lock
+      when: not ansible_check_mode
+
+    - debug: var=mem_lock.stdout_lines
+
+    - name: Update /etc/security/limits.d/99-grid-oracle-limits.conf
+      template: src=oracle/99-grid-oracle-limits.conf.j2 dest=/etc/security/limits.d/99-grid-oracle-limits.conf owner=root group=root mode=0600
+
+    - name: Update /etc/profile.d/oracle-grid.sh
+      template: src=oracle/oracle-grid.sh dest=/etc/profile.d/oracle-grid.sh owner=root group=root mode=0755
+
+    - name: hugepage sysctl gid mapping
+      sysctl:
+        name: vm.hugetlb_shm_group
+        value: "{{ oracle_groups.oinstall }}"
+        state: present
+        reload: yes
+        sysctl_set: yes
+        ignoreerrors: yes
+
+    - name: Recommended sysctl
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: yes
+        sysctl_set: yes
+        ignoreerrors: yes
+      with_items: 
+        - { name: vm.swappiness, value: 1 }
+        - { name: vm.dirty_background_ratio, value: 3 }
+        - { name: vm.dirty_ratio, value: 80 }
+        - { name: vm.dirty_expire_centisecs, value: 500 }
+        - { name: vm.dirty_writeback_centisecs, value: 100 }
+        - { name: kernel.shmmax, value: 4398046511104 }
+        - { name: kernel.shmall, value: 1073741824 }
+        - { name: kernel.shmmni, value: 4096 }
+        - { name: kernel.sem, value: "250 32000 100 250" }
+        - { name: fs.file-max, value: 6815744 }
+        - { name: fs.aio-max-nr, value: 1048576 }
+        - { name: net.ipv4.ip_local_port_range, value: "9000 65500" }
+        - { name: net.core.rmem_default, value: 262144 }
+        - { name: net.core.rmem_max, value: 4194304 }
+        - { name: net.core.wmem_default, value: 262144 }
+        - { name: net.core.wmem_max, value: 1048576 }
+#        - { name: "net.ipv4.conf.{{ private_interface }}.rp_filter", value: 2 }
+#        - { name: "net.ipv4.conf.{{ private_interface }}.rp_filter", value: 2}
+        - { name: kernel.panic_on_oops, value: 1 }
+#      when: not(
+#                (private_interface is undefined)
+#                or
+#                (private_interface is none)
+#                or
+#                (private_interface | trim == '')
+#              )
+      notify:
+        - reload sysctl.conf
+        - flush routes
+
+  handlers:
+    - name: Restart NTP
+      systemd: name=ntpd masked=no  state=restarted enabled=true
+
+    - name: restart sshd
+      systemd: name=sshd masked=no  state=restarted enabled=true
+
+    - name: reload sysctl.conf
+      command: /sbin/sysctl -p
+
+    - name: flush routes
+      command: /sbin/sysctl -w net.ipv4.route.flush=1
+
+- name: Reboot the server
+  hosts: oracle
+  gather_facts: false
+  tasks:
+    - name: reboot the server
+      shell: sleep 2 && shutdown -r now "Ansible updates triggered"
+      async: 1
+      poll: 0
+      become: true
+      ignore_errors: true
+      
+
+    - name: wait for server to come online
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 22
+        state: started
+        delay: 20
+        timeout: 900
+      delegate_to: localhost
+      register: test
+      become: false
+
+    - name: print message
+      debug:
+        msg: Not Running
+      when: test.state != "started"
+
+

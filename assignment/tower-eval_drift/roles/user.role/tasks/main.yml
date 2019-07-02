@@ -1,0 +1,14 @@
+---
+- name: User Creation
+  user:
+    name: "{{ item.user }}"
+    comment: "{{ item.gecos|default(item.user) }}"
+    uid: "{{ item.uid|default(omit) }}"
+    group: "{{ item.group|default(omit) }}"
+    groups: "{{ item.groups| default([]) | join(',') or omit }}"
+    password: "{{ item.password|default(omit) }}"
+    home: "{{ item.home|default(omit) }}"
+    shell: "{{ item.shell|default(omit) }}"
+    state: present
+    createhome: yes
+  with_items: "{{ myusers }}"

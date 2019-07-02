@@ -1,0 +1,6 @@
+###################### THIS IS NEW AND EDITABLE LINE FORSECURITY CHANGES FOR ZENOSS  MONITORING APPROVES BY SAUSTHAV #######################
+Defaults:root !requiretty
+Defaults:zenoss_user !requiretty
+Cmnd_Alias ZENOSS_LVM_CMDS = /sbin/pvs, /sbin/vgs, /sbin/lvs, /usr/sbin/pvs, /usr/sbin/vgs, /usr/sbin/lvs
+Cmnd_Alias ZENOSS_SVC_CMDS = /bin/systemctl list-units *, /bin/systemctl status *, /sbin/initctl list, /sbin/service --status-all, /usr/sbin/dmidecode
+zenoss_user ALL=(ALL) NOPASSWD: ZENOSS_LVM_CMDS, ZENOSS_SVC_CMDS

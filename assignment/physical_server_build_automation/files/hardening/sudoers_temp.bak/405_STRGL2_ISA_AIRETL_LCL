@@ -1,0 +1,201 @@
+# Begin  AIRTEL STORAGE_L2 standard template Ver 1.1 Date 2016-09-20  #
+# Description : STORAGE_L2  USER_ID : cyadmst2
+#
+# Software products and versions
+# Supported OS platforms - 
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control
+# V1.0 - shortname@us.ibm.com - put your shortname and  correct country code
+#          plus any comments you want included into the sudoers file.
+#
+# 
+# <:NA notes- rename this file to your application name, ensure you keep it a
+#      'pure' unix text file, otherwise it may not work right when #included.
+#      Recommend use of VIM to edit:  
+#      Reminder when replacing 'yourAppName' below, use all CAPS, that is 
+#      syntatically required by sudo. >
+#
+#=====================================================================================
+#
+# Replace sample group names with real group names for your account
+# 
+
+User_Alias      IBM_USTRGL2_BAU = cyadmst2 
+
+#User_Alias      IBM_yourAppName_ADM = %admgrp # Use only if you have a 'type B'
+                    # sudo entry, otherwise delete.  If used, it MUST be a 
+                    # different group then used for the IBM_*_BAU entry, and 
+                    # will normally be empty.  ID Admin will populate this
+                    # group during change windows/problem event, then empty
+                    # the group when the event is complete.
+
+#Host_Alias	yourAppName_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# -----Do not change anything below this line, excepting to replace ----------
+# -----         <:path *> content with local pathing.       ------------------
+#
+Cmnd_Alias IBM_CSTRGL2_BAU_CMDS = \
+	/usr/sbin/cfgmgr, \
+	/usr/bin/getconf, \
+	/usr/sbin/mklv, \
+	/usr/sbin/rmdev, \
+	/usr/bin/fget_config, \
+	/usr/sbin/mirrorvg, \
+	/usr/sbin/mount, \
+	/usr/sbin/varyonvg, \
+	/usr/sbin/chdev, \
+	/usr/sbin/lsdev, \
+	/usr/sbin/vmo, \
+	/usr/sbin/pcmquerypr, \
+	/usr/sbin/pvcreate, \
+	/usr/sbin/lvchange, \
+	/usr/sbin/lvextend, \
+	/usr/sbin/lvremove, \
+	/sbin/service multipathd, \
+	/usr/sbin/lvextend, \
+	/usr/sbin/vgchgid, \
+	/usr/sbin/vxdisk, \
+	/usr/sbin/vxprint, \
+	/usr/sbin/lvmmigrate, \
+	/usr/sbin/format, \
+	/usr/sbin/metareplace, \
+	/usr/sbin/bootinfo, \
+	/usr/bin/svcs, \
+	/usr/sbin/crfs, \
+	/usr/sbin/mknod, \
+	/usr/bin/startsrc -s TSRMsrv1, \
+	/usr/sbin/pvdisplay, \
+	/usr/bin/sddpcm_get_config, \
+	/usr/sbin/migratepv, \
+	/usr/sbin/umount, \
+	/usr/sbin/extendvg, \
+	/usr/sbin/lquerypv, \
+	/usr/sbin/prtconf, \
+	/usr/sbin/chpath, \
+	/usr/sbin/readvgda, \
+	/usr/sbin/vgcreate, \
+	/usr/sbin/fsadm, \
+	/usr/sbin/pvmove, \
+	/opt/fcms/bin/fcmsutil, \
+	/usr/sbin/pvcreate, \
+	/sbin/resize2fs, \
+	/usr/sbin/vgscan, \
+	/usr/sbin/vxdg init, \
+	/usr/sbin/vxtask, \
+	/usr/sbin/lvreduce, \
+	/sbin/mkfs, \
+	/usr/sbin/sar, \
+	/opt/perf/bin/glance, \
+	/usr/sbin/chdev, \
+	/usr/sbin/chlv, \
+	/usr/bin/pcmpath, \
+	/opt/IBM/TPC/device/bin/aix/stopTPCF.sh, \
+	/usr/sbin/lvdisplay, \
+	/usr/bin/mpio_get_config, \
+	/usr/sbin/migratelp, \
+	/usr/sbin/exportvg, \
+	/usr/sbin/reducevg, \
+	/usr/sbin/lqueryvg, \
+	/usr/sbin/errpt, \
+	/usr/sbin/lsfs, \
+	/usr/sbin/cplv, \
+	/usr/sbin/lvcreate, \
+	/usr/sbin/vgchange, \
+	/usr/sbin/lvcopy, \
+	/usr/sbin/kmtune, \
+	/usr/sbin/vgcreate, \
+	/usr/sbin/pvmove, \
+	/usr/sbin/vgsync, \
+	/usr/sbin/vxdg deport, \
+	/usr/sbin/vxassist, \
+	/usr/sbin/lvremove, \
+	/sbin/newfs, \
+	/usr/bin/top, \
+	/usr/bin/cat, \
+	/usr/sbin/insf, \
+	/usr/sbin/chfs, \
+	/usr/bin/datapath, \
+	/opt/IBM/TPC/device/bin/aix/startTPCF.sh, \
+	/sbin/fdisk -l, \
+	/usr/sbin/sanlun, \
+	/usr/sbin/mklvcopy, \
+	/usr/sbin/importvg, \
+	/usr/sbin/rmfs, \
+	/usr/sbin/lquerylv, \
+	/usr/sbin/sar, \
+	/usr/bin/stopsrc -s pcmsrv, \
+	/usr/bin/nmon, \
+	/usr/sbin/mkfs, \
+	/usr/sbin/pvchange, \
+	/usr/sbin/vgexport, \
+	/usr/sbin/pvcreate, \
+	/usr/sbin/lvcreate, \
+	/usr/sbin/lvremove, \
+	/usr/sbin/vxdisksetup, \
+	/usr/sbin/vxdg import, \
+	/usr/sbin/lvlnboot, \
+	/usr/sbin/lvrmboot, \
+	/usr/sbin/metainit, \
+	/usr/bin/vmstat, \
+	/usr/bin/du, \
+	/sbin/service multipathd stop / start, \
+	/usr/sbin/chvg, \
+	/usr/sbin/mkvg, \
+	/opt/IBM/TPC/service/service.sh, \
+	/sbin/multipath, \
+	/usr/bin/xiv_devlist, \
+	/usr/sbin/syncvg, \
+	/usr/sbin/varyoffvg, \
+	/usr/sbin/rmlv, \
+	/usr/sbin/lquerypr, \
+	/usr/bin/topas, \
+	/usr/bin/startsrc -s pcmsrv, \
+	/usr/sbin/ioscan, \
+	/usr/sbin/newfs, \
+	/usr/sbin/rmsf, \
+	/usr/sbin/vgimport, \
+	/usr/sbin/metarecover, \
+	/sbin/mke2fs, \
+	/usr/sbin/vgremove, \
+	/usr/sbin/vxdiskunsetup, \
+	/usr/sbin/vxdg -g, \
+	/usr/sbin/lvmchk, \
+	/usr/sbin/lvsplit, \
+	/usr/sbin/metacreate, \
+	/usr/bin/iostat, \
+	/usr/bin/df, \
+	/usr/sbin/metarecover, \
+	/usr/sbin/chpv, \
+	/usr/sbin/unmirrorvg, \
+	/opt/IBM/TPC/agent/bin/agent.sh status, \
+	/usr/bin/systool -c fc_host -v, \
+	/usr/bin/fcstat, \
+	/usr/sbin/lscfg, \
+	/usr/bin/filemon, \
+	/usr/sbin/diskinfo, \
+	/usr/sbin/mknod, \
+	/usr/sbin/vgextend, \
+	/usr/sbin/fuser, \
+	/sbin/vgchange, \
+	/usr/sbin/lvmerge, \
+	/usr/sbin/lvsync, \
+	/usr/sbin/metadb, \
+	/usr/bin/prstat, \
+	/usr/sbin/SMcli, \
+	/usr/bin/stopsrc -s TSRMsrv1, \
+	/tmp/sra/aix_power/bin/Agent, \
+	/usr/sbin/lvmstat, \
+	/usr/sbin/vgdisplay, \
+	/usr/sbin/metaroot, \
+	/usr/sbin/fcinfo hba-port
+
+# Assigned To group
+#IBM_yourAppName_BAU  yourAppName_HOSTS = IBM_yourAppName_BAU_CMDS		
+	
+IBM_USTRGL2_BAU ALL=(root) NOPASSWD:IBM_CSTRGL2_BAU_CMDS,!/bin/cat /etc/*,!/usr/bin/cat /etc/*, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+# End  AIRTEL STORAGE_L2 standard template Ver 1.0 Date yyyy-mm-dd    * Master * Refer xxxxx-unapproved- End #

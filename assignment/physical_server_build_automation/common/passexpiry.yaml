@@ -1,0 +1,10 @@
+---
+- name: Set password expiry to Never for root
+  shell: "chage -d '{{ ansible_date_time.date }}' root && chage -M 180 root"
+
+- name: Set password expiry to Never for decoy
+  shell: "chage -d '{{ ansible_date_time.date }}' decoy && chage -M 180 decoy"
+
+- name: Set password expiry to Never for snow_user
+  shell: "chage -d '{{ ansible_date_time.date }}' snow_user && chage -M 180 snow_user"
+

@@ -1,0 +1,153 @@
+# Begin  Customer yourAppName standard template Ver 1.0 Date 2015-05-29  * Master * Refer xxxxx-unapproved- Begin #
+# Description  : Restricted Sudo Access
+# Software products and versions
+# Supported OS platforms - 
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control
+# V1.0 - shortname@us.ibm.com - put your shortname and  correct country code
+#          plus any comments you want included into the sudoers file.
+#
+# 
+# <:NA notes- rename this file to your application name, ensure you keep it a
+#      'pure' unix text file, otherwise it may not work right when #included.
+#      Recommend use of VIM to edit:  
+#      Reminder when replacing 'yourAppName' below, use all CAPS, that is 
+#      syntatically required by sudo. >
+#
+#=====================================================================================
+#
+# Replace sample group names with real group names for your account
+# 
+#User_Alias      IBM_yourAppName_BAU = %localgrp
+User_Alias OTHERS = nobody
+
+#User_Alias      IBM_yourAppName_ADM = %admgrp # Use only if you have a 'type B'
+                    # sudo entry, otherwise delete.  If used, it MUST be a 
+                    # different group then used for the IBM_*_BAU entry, and 
+                    # will normally be empty.  ID Admin will populate this
+                    # group during change windows/problem event, then empty
+                    # the group when the event is complete.
+
+
+#Host_Alias	yourAppName_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# -----Do not change anything below this line, excepting to replace ----------
+# -----         <:path *> content with local pathing.       ------------------
+#
+#Cmnd_Alias IBM_yourAppName_BAU_CMDS = \
+#   /usr/bin/command1, \
+#   /usr/bin/command2  # etc.
+
+Cmnd_Alias	OTHERS_NONE = \
+		/usr/bin/vi, \
+		/usr/bin/smit, \
+		/usr/bin/smitty, \
+		/usr/bin/chuser, \
+		/usr/sbin/rmuser, \
+		/usr/bin/mkgroup,  \
+		/usr/sbin/rmgroup, \
+		sudoedit /etc/*, \
+		/usr/sbin/useradd, \
+		/usr/sbin/usermod, \
+		/usr/sbin/userdel, \
+		/usr/sbin/groupadd, \
+		/usr/sbin/groupdel, \
+		/usr/sbin/groupmod, \
+		/usr/sbin/rmfs, \
+		/usr/sbin/rmlv, \
+		/usr/bin/crontab
+
+Cmnd_Alias	SUDOSUDO1 = \
+		/usr/local/bin/sudo, \
+		/usr/bin/sudo, \
+		/bin/sudo
+
+Cmnd_Alias	IBM_SHELLS_ALL1 = \
+		/bin/ash, \
+		/usr/bin/ash, \
+		/bin/bash, \
+		/usr/bin/bash, \
+		/opt/freeware/bin/bash, \
+		/usr/opt/freeware/bin/bash, \
+		/bin/bash1, \
+		/usr/bin/bash1, \
+		/bin/bash2, \
+		/usr/bin/bash2, \
+		/bin/bsh, \
+		/usr/bin/bsh, \
+		/bin/ch, \
+		/usr/bin/ch, \
+		/bin/csh, \
+		/usr/bin/csh, \
+		/bin/jsh, \
+		/usr/bin/jsh, \
+		/bin/ksh, \
+		/usr/bin/ksh, \
+		/bin/ksh93, \
+		/usr/bin/ksh93, \
+		/bin/pfcsh, \
+		/usr/bin/pfcsh, \
+		/bin/pfksh, \
+		/usr/bin/pfksh, \
+		/bin/pfsh, \
+		/usr/bin/pfsh, \
+		/bin/psh, \
+		/usr/bin/psh, \
+		/bin/recsh, \
+		/usr/bin/recsh, \
+		/bin/rksh, \
+		/usr/bin/rksh, \
+		/bin/rsh, \
+		/usr/bin/rsh, \
+		/usr/ucb/rsh, \
+		/bin/sh, \
+		/usr/bin/sh, \
+		/usr/samples/tcpip/sendmail/sh, \
+		/usr/shell, \
+		/usr/bin/shell, \
+		/bin/tclsh, \
+		/usr/bin/tclsh, \
+		/opt/freeware/bin/tclsh, \
+		/usr/opt/freeware/bin/tclsh, \
+		/bin/tclsh8.4, \
+		/usr/bin/tclsh8.4, \
+		/opt/freeware/bin/tclsh8.4, \
+		/usr/opt/freeware/bin/tclsh8.4, \
+		/bin/tcsh, \
+		/usr/bin/tcsh, \
+		/bin/tsh, \
+		/usr/bin/tsh, \
+		/bin/wish, \
+		/usr/bin/wish, \
+		/opt/freeware/bin/wish, \
+		/usr/opt/freeware/bin/wish, \
+		/bin/wish8.4, \
+		/usr/bin/wish8.4, \
+		/opt/freeware/bin/wish8.4, \
+		/usr/opt/freeware/bin/wish8.4, \
+		/bin/wishx, \
+		/usr/bin/wishx, \
+		/bin/zsh, \
+		/usr/bin/zsh
+
+# Assigned To group
+#IBM_yourAppName_BAU  yourAppName_HOSTS = IBM_yourAppName_BAU_CMDS
+			
+OTHERS ALL = NOPASSWD : ALL, !SUDOSUDO1, !IBM_SHELLS_ALL1, NOEXEC:IBM_SHELLESCAPE_ALL, !OTHERS_NONE
+
+# Begin Customer yourAppName 1.0  Date yyyy-mm-dd  * Maintenance * Refer xxxxx-unapproved- Begin #
+# <:NA notes- If you do not need a 'Maintenance' type entry, you can simply 
+#      delete from the "Begin ... * Maintenance" line to the 
+#      "End ... * Maintenance" line. >
+# Available only during scheduled change/installation windows.
+#Cmnd_Alias	IBM_yourAppName_ADM_CMDS = \
+#   <:insert directory to be used in change>/command3, \
+#   /usr/bin/command4   # etc...
+# 
+#IBM_yourAppName_ADM  yourAppName_HOSTS = IBM_yourAppName_ADM_CMDS
+# End Customer yourAppName Ver 1.0  Date yyyy-mm-dd * Maintenance * Refer xxxxx-unapproved- End #
+# End  Customer yourAppName standard template Ver 1.0 Date yyyy-mm-dd    * Master * Refer xxxxx-unapproved- End 

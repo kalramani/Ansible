@@ -1,0 +1,19 @@
+---
+#******************************************************************************
+# Role: linux-hardening
+# File: tasks/account_settings.yml
+#******************************************************************************
+- name: Set Trap to disable Ctrl+C to avoid readonly TMOUT
+  lineinfile:
+    dest: '/etc/profile'
+    regexp: "^trap "
+    line: 'trap "" 1 2 3 15'
+    state: present
+
+- name: Set readonly TMOUT
+  lineinfile:
+    dest: '/etc/profile'
+    regexp: "^export TMOUT"
+    line: 'export TMOUT=300'
+    state: present
+

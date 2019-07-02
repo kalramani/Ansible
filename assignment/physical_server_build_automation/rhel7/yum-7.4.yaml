@@ -1,0 +1,11 @@
+---
+#******************************************************************************
+- name: Create yum repository for RHEL7.4
+  template:
+      dest: '/etc/yum.repos.d/rhel7.4.repo'
+      src: "hardening/rhel7/rhel7.4.repo"
+      owner: root
+      group: root
+      mode: 0644
+
+

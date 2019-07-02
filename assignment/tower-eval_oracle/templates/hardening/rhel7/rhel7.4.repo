@@ -1,0 +1,5 @@
+[rhel-7.4]
+name=yum_client
+baseurl=http://10.5.200.155/rhel7.4
+enabled=0
+gpgcheck=0

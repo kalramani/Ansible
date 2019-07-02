@@ -1,0 +1,340 @@
+# Begin  Global WebSphere standard template Ver 1.4.2  Date 2016-09-20 * Master * Refer  xxxxx Begin #
+# Description WebSphere Application Server 
+#
+# Software products and versions V5.0 / V5.1 / V6.0 
+# Supported OS platforms AIX
+# local functional ID wasadmin
+# local path changes <:Install Path > = /usr/WebSphere/AppServer
+# local OS groups for the Master  IBMWASS , IBMWASM
+# self serve access permitted for all sub templates except IBMWASM
+#
+# This sudo section should only be used when architectural considerations require WebSphere to be run as root.
+# root privileges are not required to run WebSphere and #after V8.0 they are not required for patching WebSphere
+#
+#
+# Version control
+# V1.4 - jekri@dk.ibm.com - updated template layout with command aliases
+#
+# V1.4.1 - jekri@dk.ibm.com - minor update, the invalid character "-" replaced with "_" in the User_Alias NAMES
+#
+# V1.4.2 - jekri@dk.ibm.com - minor update, syntax error corrected, Cmnd_Alias names changed to standard
+#
+#-------------------------------------------------------------------------
+#
+# Replace sample group names with real group names for your account
+# 
+User_Alias      IBM_WAS_BAU = wasadmin
+#
+# use a different group for maintenance windows, so all we need to do is add/remove folks from group:
+#
+Host_Alias	WAS_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# --------------Do not change anything below this line, excepting to replace <:path *> content with local pathing. ------------------
+#
+Cmnd_Alias  IBM_WAS_BAU_CMDS = \
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/startServer.sh, \
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/stopServer.sh, \
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/clearClassCache.sh, \
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/setupCmdLine.sh, \
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/collector.sh, \
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/syncNode.sh, \
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/versionInfo.sh, \	
+		/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/java/jre/bin/keytool, \
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/bin/collector.sh, \
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/bin/syncNode.sh, \
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/bin/versionInfo.sh, \		
+		/[Ww][Aa][Ss]/[Aa]pp[Ss]erver/java/jre/bin/keytool, \
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/bin/startServer.sh, \
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/bin/stopServer.sh, \
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/bin/collector.sh, \
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/bin/syncNode.sh, \
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/bin/versionInfo.sh, \		
+		/[Ww][Aa][Ss]/[Pp]roc[Ss]erver/java/jre/bin/keytool, \		
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/startServer.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/stopServer.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/clearClassCache.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/setupCmdLine.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/collector.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/syncNode.sh, \		
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/bin/versionInfo.sh, \	
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/java/jre/bin/keytool, \		
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \		
+		/WASND61/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/bin/collector.sh, \
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/bin/syncNode.sh, \		
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww][Pp][Ss]/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/bin/startServer.sh, \
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/bin/stopServer.sh, \
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/bin/collector.sh, \	
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/bin/syncNode.sh, \	
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww][Pp][Ss]/[Pp]roc[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/AirtelWAS8/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver2/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver7/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver85/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere//java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/BA[Dd]mgr80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Pp]ortal[Ss]erver/bin/WPVersionInfo.sh, \
+		/[Ww]eb[Ss]phere/BAWPS80/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Pp]ortal[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Cc]ommerce[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Pp]ortal[Ss]erver/bin/WPVersionInfo.sh, \
+		/[Ww]eb[Ss]phere/[Pp]ortal[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Pp]roc[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/bin/collector.sh, \
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/bin/syncNode.sh, \		
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Ss]ervice[Rr]egistry8/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/WAS7/[Aa]pp[Ss]erver/java/jre/bin/keytool, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Pp]ortal[Ss]erver/bin/WPVersionInfo.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Pp]ortal[Ss]erver/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver85/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere7/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Pp]ortal[Ss]erver/bin/WPVersionInfo.sh, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm]/[Pp]ortal[Ss]erver/setupCmdLine.sh, \
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/datafs01/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/ds81/DS8.1/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/usr/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/usr/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/[Dd]mgr/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/[Dd]mgr/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/[Dd]mgr/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/[Dd]mgr/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/[Dd]mgr/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/[Dd]mgr/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/[Dd]mgr/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/[Dd]mgr/java/jre/bin/keytool, \
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/ndnc/[Ii][Bb][Mm]/[Ww]eb[Ss]phere/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/bin/startServer.sh, \
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/bin/stopServer.sh, \
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/bin/clearClassCache.sh, \
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/bin/setupCmdLine.sh, \
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/bin/collector.sh, \	
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/bin/syncNode.sh, \	
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/bin/versionInfo.sh, \	
+		/[Ww]eb[Ss]phere/etize/[Aa]pp[Ss]erver/java/jre/bin/keytool, \	
+		/[Ww]eb[Ss]phere/etize/[Pp]ortal[Ss]erver/bin/WPVersionInfo.sh, \
+		/[Ww]eb[Ss]phere/etize/[Pp]ortal[Ss]erver/bin/setupCmdLine.sh, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]7/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]7/[Ii][Hh][Ss]/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]7/[Ii][Hh][Ss]7/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]7/[Ii][Hh][Ss]7.0/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]7/[Ii][Hh][Ss]85/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Bb][Mm]/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Bb][Mm]/[Ii][Hh][Ss]85/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]7/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]7.0/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]85/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]v80/bin/apachectl, \
+		/[Hh][Tt][Tt][Pp][Ss]/[Ii][Hh][Ss]/bin/apachectl, \
+		/[Ii][Bb][Mm][Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Ii][Bb][Mm]/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Bb][Mm][Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Ii][Bb][Mm]/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]/bin/apachectl, \
+		/[Ii][Bb][Mm][Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]/bin/apachectl, \
+		/[Ii][Bb][Mm][Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/[Ii][Hh][Ss]7/bin/apachectl, \
+		/[Ii][Hh][Ss]/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]7.0/bin/apachectl, \
+		/[Ii][Hh][Ss]/[Ii][Bb][Mm][Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Ii][Hh][Ss]/[Ii][Hh][Ss]7/bin/apachectl, \
+		/usr/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Ww]eb[Ss]phere/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm][Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/[Ww]eb[Ss]phere/[Ii][Bb][Mm][Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/data/[Ii][Bb][Mm]/[Hh][Tt][Tt][Pp][Ss][Ee][Rr][Vv][Ee][Rr]/bin/apachectl, \
+		/ecrm/oracle/aesora/iAS/Apache/Apache/bin/apachectl
+		
+Cmnd_Alias UNX_CMDS= \
+	/usr/bin/ipcs,/usr/bin/svmon,/usr/sbin/prtconf, \
+	/usr/sbin/no, /usr/sbin/ioo, /usr/sbin/vmo, /usr/sbin/lspv, /usr/sbin/lsattr, /usr/sbin/sar, \
+	/usr/bin/kill, /usr/sbin/rmsock, /usr/sbin/lsof, /usr/bin/ls
+	
+
+IBM_WAS_BAU  ALL=(root) NOPASSWD:IBM_WAS_BAU_CMDS, NOPASSWD:UNX_CMDS, NOEXEC: !IBM_SHELLESCAPE_ALL 
+
+
+# Begin Global WebSphere standard template Ver 1.4.2  Date 2014-10-31   * Maintenance * Refer xxxxx Begin #
+#IBM_WAS_ADM  WAS_HOSTS = IBM_WAS_ADM_CMDS
+# End  Global WebSphere standard template Ver 1.4.2  Date 2014-10-31  * Maintenance * Refer xxxxx End #

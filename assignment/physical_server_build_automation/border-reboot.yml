@@ -1,0 +1,35 @@
+---
+- name: Testing with Cisco IMC
+  hosts: tower
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Set Boot Order and reboot server
+      imc_rest:
+        hostname: '{{ imc_hostname }}'
+        username: '{{ imc_username }}'
+        password: '{{ imc_password }}'
+        validate_certs: no
+        content: |
+          <!-- Set Boot Order and reboot server -->
+          <configConfMo dn='sys/rack-unit-1/boot-policy'> <inConfig>
+            <lsbootDef dn='sys/rack-unit-1/boot-policy' rebootOnUpdate='yes'> <lsbootVirtualMedia access='read-only' order='1' type='virtual-media' rn='vm-read-only'/> <lsbootStorage access='read-write' order='2' type='storage' rn='storage-read-write'/>  </lsbootDef>
+          </inConfig></configConfMo>  
+      delegate_to: localhost
+
+    - name: sleep for 300 seconds and continue with play
+      wait_for: timeout=300
+      delegate_to: localhost
+
+    - name: Roll Back Boot Order
+      imc_rest:
+        hostname: '{{ imc_hostname }}'
+        username: '{{ imc_username }}'
+        password: '{{ imc_password }}'
+        validate_certs: no
+        content: |
+          <!-- Roll Back Boot Order -->
+          <configConfMo dn='sys/rack-unit-1/boot-policy'> <inConfig>
+            <lsbootDef dn='sys/rack-unit-1/boot-policy' rebootOnUpdate='no'> <lsbootVirtualMedia access='read-only' order='2' type='virtual-media' rn='vm-read-only'/> <lsbootStorage access='read-write' order='1' type='storage' rn='storage-read-write'/>  </lsbootDef>
+          </inConfig></configConfMo>
+      delegate_to: localhost

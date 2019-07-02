@@ -1,0 +1,27 @@
+---
+- name: Asm creation play
+  hosts: oracle
+  tasks:
+    - name: removing ASM disks step2
+      shell: "/etc/init.d/oracleasm deletedisk {{ item.value.Devname }}"
+      with_dict: "{{ asm_disks }}" 
+
+    - name: Removing partitions 1
+      parted:
+        device: "{{ ASM_DISK_USE }}"
+        number: "{{ asm_disks.asm_disk3.PARTITION }}"
+        state: absent
+
+    - name: Removing partitions 2
+      parted:
+        device: "{{ ASM_DISK_USE }}"
+        number: "{{ asm_disks.asm_disk2.PARTITION }}"
+        state: absent 
+
+
+    - name: Removing partitions 3
+      parted:
+        device: "{{ ASM_DISK_USE }}"
+        number: "{{ asm_disks.asm_disk1.PARTITION }}"
+        state: absent
+

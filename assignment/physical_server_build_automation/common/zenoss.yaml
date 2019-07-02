@@ -1,0 +1,19 @@
+---
+- name: Add User zenoss_user
+  user: "name=zenoss_user state=present password={{ zenoss_user_password }}"
+  when: ansible_virtualization_role == "host"
+
+- name: Set password expiry to Never for zenoss_user
+  shell: "chage -M -1 zenoss_user"
+  when: ansible_virtualization_role == "host"
+#  when: facter_virtual = "physical"
+
+- name: Update Sudo Rules
+  template: src=hardening/common/zenoss
+        dest=/etc/sudoers.d/zenoss
+        owner=root
+        group=root
+        mode=0600
+  when: ansible_virtualization_role == "host"
+# when: facter_virtual = "physical"
+

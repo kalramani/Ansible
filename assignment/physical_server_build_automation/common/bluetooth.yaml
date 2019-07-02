@@ -1,0 +1,9 @@
+---
+#******************************************************************************
+- name: Create /etc/modprobe.d/disable-bluetooth.conf
+  template: 
+    src: hardening/disable-bluetooth.conf
+    dest: /etc/modprobe.d/disable-bluetooth.conf
+    owner: root
+    group: root
+    mode: 0644

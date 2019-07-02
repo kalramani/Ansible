@@ -1,0 +1,22 @@
+---
+- stat: path=/usr/sbin/vxconfigd
+  register: vxconfigd
+
+- name: Install Multipath
+  yum: name={{ item }} state=present
+  with_items:
+    - device-mapper-multipath
+  when: ansible_virtualization_role == "host" and vxconfigd.stat.exists == False
+  notify:
+    Restart Multipath
+
+- name: Config /etc/multipath.conf
+  template: src=hardening/common/multipath.conf
+        dest=/etc/multipath.conf
+        owner=root
+        group=root
+        mode=0644
+  when: ansible_virtualization_role == "host" and vxconfigd.stat.exists == False
+  notify:
+    Restart Multipath
+

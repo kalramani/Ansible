@@ -1,0 +1,20 @@
+---
+
+- name: Set Banner
+  template: src=hardening/issue
+        dest=/etc/issue
+        owner=root
+        group=root
+        mode=0644
+- name: Set Banner 2
+  template: src=hardening/issue
+        dest=/etc/issue.net
+        owner=root
+        group=root
+        mode=0644
+- name: Set Banner 3
+  template: src=hardening/issue
+        dest=/etc/motd
+        owner=root
+        group=root
+        mode=0644

@@ -1,0 +1,11 @@
+---
+#******************************************************************************
+- name: Enable Oracle Prerequisite RPMS yum repo
+  template:
+      dest: '/etc/yum.repos.d/oracle-pre.repo'
+      src: "hardening/rhel7/oracle-pre.repo"
+      owner: root
+      group: root
+      mode: 0644
+
+

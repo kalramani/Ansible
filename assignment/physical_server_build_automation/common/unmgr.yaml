@@ -1,0 +1,8 @@
+- name: unmgr password expiry change to 180
+  shell: chage -M 180 unmgr007
+
+- name: Update key for unmgr
+  authorized_key:
+     user: unmgr007
+     state: present
+     key: 'from="10.14.41.104" ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA69ONsbQM6Wb/+8CgRxPonp9SRCCYxSQVmLfZdL8AcvglDtxdSGkvvWDOft4LY7xMqn2/jH7yPVOtQF6svKKFzU3CEDoazfSWpvNuur/ztikf2ZLf1HCI9+qerfcLv2Wx37gNKP2qKAMQ77opzGCcob94NHMF9e9vLnI2wwwySVE1rdefZVX9NVQ/I9DLDojjnAbvuLpGyt3L54aVlVL1NpTAjhXdSOhqZN2xZIw+iJ3LZ79wwn+QoW3LnedOmnZWLzaXzu0YsrL8Hg2i02msfO/8iRR452D9Khee2XznHmk+v46Ks/BVZvLOTd29zhHZxkSumB3RLHCUNF4C7Lq41Q== unmgr007@montool !!744/F/*BHAUX5/SSO!!'

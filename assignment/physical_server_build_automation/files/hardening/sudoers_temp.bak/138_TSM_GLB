@@ -1,0 +1,280 @@
+# Begin  NA NetBackup (TSM) standard template Ver 1.1   Date 2016-09-20  #
+# Description : BACKUP_L3_ADMINISTRATOR   USER_ID : cyadmbkp
+#
+# Software products and versions
+# Supported OS platforms
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control (note: version number indicated will be chosen to
+# align with the corresponding global 'paired' template)
+#------------------------------------------------------------------------
+# v1.0 - rybczyk@us.ibm.com - initial NA version
+# v1.1 - rybczyk@us.ibm.com - update comments, and +added or -removed:
+#  +    sudoedit /usr/openv/netbackup/*.conf, \
+#  -    sudoedit /usr/openv/netbackup/bp.conf, \ 
+#  +    /usr/bin/rm /usr/openv/logs/*, \
+#  +    /usr/bin/rm /usr/openv/netbackup/logs/*, \ 
+#  +    !/usr/bin/rm *[\:space\:]/* *,   !/usr/bin/rm *./*,   !/usr/bin/rm *..*, \
+# v1.2 add mkdir standard negation.
+# v1.3 rybczyk@us.ibm.com +added
+#  +    /usr/openv/netbackup/bin/nbunquiescence, \
+#  +    /usr/openv/netbackup/bin/nbvault,  \
+#  +    /usr/openv/netbackup/bin/ndmpagent, \
+#  +    /usr/openv/netbackup/bin/oracle_link, \
+#  +    /usr/openv/netbackup/bin/version, \
+#  +    /usr/openv/netbackup/bin/vltadm, \
+#  +    /usr/openv/netbackup/bin/vltcontainers, \
+#  +    /usr/openv/netbackup/bin/vlteject, \
+#  +    /usr/openv/netbackup/bin/vltinject, \
+#  +    /usr/openv/netbackup/bin/vltoffsitemedia, \
+#  +    /usr/openv/netbackup/bin/vltopmenu, \
+#  +    /usr/openv/netbackup/bin/vltrun, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbdeployutil, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbfindfile, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbhardwaremon, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbholdutil, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbindexutil,  \
+#  +    /usr/openv/netbackup/bin/admincmd/nbkmsutil, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbplupgrade, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbregopsc, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbreplicate, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbsnapimport, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbsnapreplicate, \
+#  +    /usr/openv/netbackup/bin/admincmd/nbsvrgrp, \
+#  +    /usr/openv/netbackup/bin/admincmd/nb_updatedssu, \
+#  +    /usr/openv/netbackup/bin/admincmd/resilient_clients
+#========================================================================
+# The User_Alias name IBM_* to identify the Alias as the
+# 'application related' alias for IBM owned ID's.
+#
+User_Alias  IBM_TSM_BAU = cyadmbkp  # replace teamgroup with the
+   # -group- that contains the account specific IBM
+   # application support team ID's. 
+   # DO NOT use this group for customer owned ID's.
+#-----------------------------------------------------------------------------
+#
+#User_Alias  IBM_NBU_CHG = %<:teamgroup_cw>  # replace teamgroup_cw with the
+   # -group- that is permitted to contain the account specific IBM
+   # application support team ID's during problem / change / install windows
+   # DO NOT use this group for customer owned ID's.
+#-----------------------------------------------------------------------------
+# Host Aliases 
+#
+#Host_Alias NBU_HOSTS = ALL # In this template, we assume all
+  # systems are managed by the IBM SA team.
+  # Indicate a subset of systems if not all will be
+  # managed by the same IBM team.
+
+# Note to sudo implementation teams:  You may comment out the above and include
+# them in the 'main' sudoers file 'just above' the include statement for this
+# template: eg:
+# IBM_NBU_BAU = %<:teamgroup>
+# #include /etc/sudoers.d/202_NBU_NA 
+
+# --------------Do not change anything below this line, excepting to ----------
+# ------ modify 'OS specific' command paths to correct OSR locations ----
+
+# User Specific Defaults
+#-----[ Cmnd Alias Section ]-------#
+Cmnd_Alias IBM_TSM_BAU_CMDS = \
+      			/usr/tivoli/tsm/client/ba/bin/dsmc, \
+                        /usr/tivoli/tsm/client/ba/bin/dsmcad, \
+                        /usr/tivoli/tsm/client/ba/bin/dsmtrace, \
+                        /usr/tivoli/tsm/client/ba/bin/resched, \
+                        /usr/tivoli/tsm/client/ba/bin/init_sched.sh, \
+                        /usr/tivoli/tsm/client/ba/bin/dsmadmc, \
+                        /usr/tivoli/tsm/client/ba/bin64/dsmc, \
+                        /usr/tivoli/tsm/client/ba/bin64/dsmcad, \
+                        /usr/tivoli/tsm/client/ba/bin64/dsmtrace, \
+                        /usr/tivoli/tsm/client/ba/bin64/resched, \
+                        /usr/tivoli/tsm/client/ba/bin64/init_sched.sh, \
+                        /usr/tivoli/tsm/client/ba/bin64/dsmadmc, \
+                        /usr/tivoli/tsm/devices/bin/rc.acs_ssi, \
+                        /usr/tivoli/tsm/devices/bin/mttest, \
+                        /usr/tivoli/tsm/devices/bin/lbtest, \
+                        /usr/tivoli/tsm/devices/bin/tapeutil, \
+                        /usr/tivoli/tsm/StorageAgent/bin/rc.tsmstgagnt,  \
+                        /usr/tivoli/tsm/StorageAgent/bin/dsmsta, \
+                        /usr/tivoli/tsm/StorageAgent/bin/tsmsta,  \
+                        /usr/tivoli/tsm/StorageAgent/bin/dsmqsan,  \
+                        /usr/tivoli/tsm/StorageAgent/bin/tsmtrcfmt,  \
+                        /usr/tivoli/tsm/StorageAgent/bin/tsmdiag,  \
+                        /usr/tivoli/tsm/client/oracle/bin64/tdpoconf showenv,  \
+                        /usr/tivoli/tsm/client/oracle/sched/mysched.scr,  \
+                        /usr/tivoli/tsm/tdp_r3/setup.sh, \
+                        /usr/tivoli/tsm/client/oracle/bin/tdpoconf, \
+                        /usr/tivoli/tsm/client/oracle/bin64/tdpoconf, \
+                        /usr/tivoli/tsm/client/oracle/bin/tdposync, \
+                        /usr/tivoli/tsm/client/oracle/bin64/tdposync, \
+                        /usr/tivoli/tsm/tdpesr3/oracle/setup.sh, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmattr, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmautomig, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmdf, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmdu, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmls, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmmigfs, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmmighelp, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmmigquery, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmmigrate, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmmigundelete, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmmode, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmmonitord, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmq, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmrecall, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmrecalld, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmreconcile, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmrm, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmrootd, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmscoutd, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmsetpw, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmsmj, \
+                        /usr/tivoli/tsm/client/hsm/bin/dsmagent, \
+                        /usr/tivoli/tsm/client/domino/bin/dsmadmc, \
+                        /usr/tivoli/tsm/client/domino/bin64/dsmadmc, \
+                        /usr/tivoli/tsm/client/domino/bin/dominstall, \
+                        /usr/tivoli/tsm/client/domino/bin64/dominstall, \
+                        /usr/tivoli/tsm/client/domino/bin/dsmdomp, \
+                        /usr/tivoli/tsm/client/domino/bin64/dsmdomp, \
+                        /usr/tivoli/tsm/client/domino/bin/dsmswitch, \
+                        /usr/tivoli/tsm/client/domino/bin64/dsmswitch, \
+                        /usr/tivoli/tsm/client/domino/bin/domsel.smp, \
+                        /usr/tivoli/tsm/client/domino/bin64/domsel.smp, \
+                        /usr/tivoli/tsm/client/domino/bin/dominc.smp, \
+                        /usr/tivoli/tsm/client/domino/bin64/dominc.smp, \
+                        /usr/tivoli/tsm/client/domino/bin/domina.smp, \
+                        /usr/tivoli/tsm/client/domino/bin64/domina.smp, \
+                        /usr/tivoli/tsm/client/domino/bin/domarc.smp, \
+                         /usr/tivoli/tsm/client/domino/bin64/domarc.smp, \
+                        /usr/tivoli/tsm/client/domino/bin/domdsmc_notes1/dominstall, \
+                        /usr/tivoli/tsm/client/domino/bin/domdsmc_notes1/domdsmc, \
+                        /usr/tivoli/tsm/client/domino/bin/domdsmc_dp1/domdsmc, \
+                        /usr/tivoli/tsm/client/domino/bin/domdsmc_dp1/dominstall, \
+                        /usr/tivoli/tsm/server/bin/dsmadmc, \
+                        /usr/tivoli/tsm/server/bin/rc.adsmserv, \
+                        /usr/tivoli/tsm/server/bin/dsmserv, \
+                        /usr/tivoli/tsm/server/bin/adsmstart, \
+                        /usr/tivoli/tsm/server/bin/adsmstop, \
+                        /usr/tivoli/tsm/server/bin/dsm_rmv_itab autostart, \
+                        /usr/tivoli/tsm/server/bin/dsm_update_itab autotrace, \
+                        /usr/tivoli/tsm/server/bin/dsmulog, \
+                        /usr/tivoli/tsm/server/bin/register license, \
+                        /usr/tivoli/tsm/server/bin/dsmtrace, \
+                        /usr/tivoli/tsm/server/bin/dsmtca, \
+                        /usr/tivoli/tsm/server/bin/dsmswitch, \
+                        /usr/tivoli/tsm/server/bin/dsmj, \
+                        /usr/tivoli/tsm/server/bin/dsmfmt, \
+                        /usr/tivoli/tsm/server/bin/dsmlabel \
+                        /usr/tivoli/tsm/server/bin/dsmlicense, \
+                        /usr/tivoli/tsm/server/bin/dsmtli.drv, \
+                        /usr/tivoli/tsm/server/bin/startserver, \
+                        /usr/tivoli/tsm/server/bin/stopserver, \
+                        /usr/tivoli/tsm/server/bin/export DSMSERV_DIR=/, \
+                        /usr/tivoli/tsm/server/bin/export DSMSERV_CONFIG-./dsmserv.opt, \
+                        /usr/tivoli/tsm/server/bin/export DSMSERV_DIR=/usr/tivoli/tsm/server/bin, \
+                        /usr/tivoli/tsm/tsmcops/tsmcops, \
+                        /usr/tivoli/tsm/tsmcops/tsmcops.sh, \
+                        /usr/tivoli/tsm/tsm_scripts/daily_health.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/daily_event.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/daily_offsite.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/daily_checkin.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/prepare.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/copystg.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/daily_stats.ksh, \
+                         /usr/tivoli/tsm/tsm_scripts/drive_usage.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/report_optionset.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/daily_occupancy.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/generate_backupset.ksh, \
+                        /usr/tivoli/tsm/tsm_scripts/generate_export.ksh, \
+                        /usr/tivoli/tsm/tdpws/tdpws, \
+                        /usr/tivoli/tsm/tdpws/tdppasswd -p initwas.utl, \
+                        /sapmnt/TSM/exe/backint, \
+                        /sapmnt/TSM/exe/backagent, \
+                        /sapmnt/TSM/exe/backfm, \
+                        /home/tsmadm/backint -p /oracle/TSM/dbs/initTSM.utl -f password, \
+                        /home/tsmadm/brbackup -c -t offline_force, \
+                        /opt/tivoli/tsm/client/informix/bin/tdpipswd, \
+                        /opt/tivoli/tsm/client/informix/bin/txbsapswd, \
+                        /etc/rc.tsm *, \
+                        /usr/bin/dsm, \
+                        /usr/bin/dsmadmc, \
+                        /usr/bin/dsmc *, \
+                        /usr/bin/dsmfmt, \
+                        /usr/bin/dsmlabel, \
+                        /usr/bin/dsmlicense, \
+                        /usr/bin/dsmserv, \
+                        /usr/bin/dsmstat, \
+                        /usr/bin/dsmtca, \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin/dsmc sched, \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin64/dsmc sched, \
+                        /usr/bin/nohup /usr/tivoli/tsm/server/bin/dsmserv, \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin/dsmc , \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin64/dsmc , \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin/dsmc inc, \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin64/dsmc inc, \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin/dsmc restore, \
+                        /usr/bin/nohup /usr/tivoli/tsm/client/ba/bin64/dsmc restore, \
+                        /usr/bin/rm ./TSM.PWD, \
+                        /usr/bin/sudoedit /usr/tivoli/tsm/[!'..']*, \
+                        !/*/tvi *[\:space\:]/* *,!/*/tvi *./*,!/*/tvi *..* \
+                        /usr/bin/chgrp bradmin /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp dsmdisk  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp tsmadm /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp tsmibm  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp tsmadmin  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp adsmadm  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp tsm  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp tsmsrvrs  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chgrp billing  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown bradmin /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown dsmdisk  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown tsmadm /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown tsmibm  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown tsm  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown tsmadmin  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown adsmadm  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown tsminst1  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chown billing  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chmod -R [0-7][0-7][0145] /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/chmod [0-7][0-7][0145] /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/rmdir  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/mkdir  /usr/tivoli/tsm/[!'..']*, \
+                        /usr/bin/touch  /usr/tivoli/tsm/[!'..']*, \
+                        !/*/chmod *[\:space\:]/* *,!/*/chmod *./*,!/*/chmod *..*, \
+                        !/*/chown *[\:space\:]/* *,!/*/chown *./*,!/*/chown *..*, \
+                        !/*/chgrp *[\:space\:]/* *,!/*/chgrp *./*,!/*/chgrp *..*, \
+                        !/*/rmdir *[\:space\:]/* *,!/*/rmdir *./*,!/*/rmdir *..*, \
+                        !/*/touch *[\:space\:]/* *,!/*/touch *./*,!/*/touch *..*, \
+                        !/*/find * -exec *, !/*/find * -ok *, \
+                        /usr/lpp/adsm/bin/[!'..']*, \
+                        /usr/lpp/adsmserv/bin/[!'..']*, \
+                        /usr/lpp/adsmserv/bin/dsmfmt, \
+                        /usr/lpp/db2_07_01/adsm/dsmapipw, \
+                        /usr/bin/rm /usr/tivoli/tsm/server/bin/adsmserv.lock, \
+                        /usr/bin/rm /usr/tivoli/tsm/StorageAgent/bin/adsmserv.lock, \
+                        /usr/sbin/bootinfo, \
+                        /usr/sbin/cfgmgr, \
+                        /usr/sbin/lsdev, \
+                        /usr/sbin/lsdev -Ccadapter, \
+                        /usr/sbin/lsdev -Cctape, \
+                        /usr/sbin/lsattr -El, \
+                        /usr/sbin/lsvpcfg, \
+                        /usr/sbin/lsvpd, \
+                        /usr/sbin/lscfg, \
+                        /usr/bin/ls, \
+                        /usr/bin/tapeutil, \
+                        /usr/bin/kill, \
+                        /usr/bin/topas, \
+                        /usr/bin/mail -s*, \
+                        /usr/bin/mtlib, \
+                        /etc/lmcpd, \
+                        /etc/ibmatl.conf, \  
+			sudoedit /etc/hosts, \
+        		/usr/sbin/rmdev, \
+        		/opt/VRTSpbx/bin/*
+
+IBM_TSM_BAU ALL=(root) NOPASSWD:IBM_TSM_BAU_CMDS, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+# End   NA NetBackup standard template Ver 1.3   Date 2014-08-28 * Master * Refer NA14247046 End #

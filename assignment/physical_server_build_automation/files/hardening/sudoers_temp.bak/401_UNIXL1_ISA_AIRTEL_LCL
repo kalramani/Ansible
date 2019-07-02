@@ -1,0 +1,91 @@
+# Begin  AIRTEL UNIX-ADMIN standard template Ver 1.1 Date 2016-09-20  #
+# Description : UNIX_ADMINISTRATOR_L1 USER_ID : cyadmul1
+#
+# Software products and versions
+# Supported OS platforms - 
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control
+# V1.0 - shortname@us.ibm.com - put your shortname and  correct country code
+#          plus any comments you want included into the sudoers file.
+#
+# 
+# <:NA notes- rename this file to your application name, ensure you keep it a
+#      'pure' unix text file, otherwise it may not work right when #included.
+#      Recommend use of VIM to edit:  
+#      Reminder when replacing 'yourAppName' below, use all CAPS, that is 
+#      syntatically required by sudo. >
+#
+#=====================================================================================
+#
+# Replace sample group names with real group names for your account
+# 
+User_Alias      IBM_UL1_BAU = cyadmul1 
+
+#User_Alias      IBM_yourAppName_ADM = %admgrp # Use only if you have a 'type B'
+                    # sudo entry, otherwise delete.  If used, it MUST be a 
+                    # different group then used for the IBM_*_BAU entry, and 
+                    # will normally be empty.  ID Admin will populate this
+                    # group during change windows/problem event, then empty
+                    # the group when the event is complete.
+
+#Host_Alias	yourAppName_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# -----Do not change anything below this line, excepting to replace ----------
+# -----         <:path *> content with local pathing.       ------------------
+#
+Cmnd_Alias IBM_CL1_BAU_CMDS = \
+	/usr/sbin/useradd, \
+	/usr/bin/cat /etc/passwd, \
+	/bin/cat /etc/passwd, \
+	/usr/bin/chuser, \
+	/sbin/pam_tally2, \
+	/usr/bin/faillog, \
+	/usr/bin/passwd, \
+	/usr/sbin/userdel, \
+	/bin/cat /etc/sudoers, \
+	/usr/bin/cat /etc/sudoers, \
+	/usr/bin/chpasswd, \
+	/usr/bin/chage, \
+	/etc/group, \
+	/etc/group, \
+	/usr/sbin/usermod, \
+	/usr/xpg4/bin/id, \
+	/usr/bin/id, \
+	/usr/sbin/groupdel, \
+	/usr/bin/finger, \
+	/usr/sbin/lsuser, \
+	/usr/bin/chown cyadmul1 /home/cyadmul1/*, \
+	/usr/bin/chown -R cyadmul1 /home/cyadmul1/*, \
+        /bin/chmod -R [0-7][0-7][0-5] /home/*, \
+        /usr/bin/chmod -R [0-7][0-7][0-5] /home/*, \
+        /bin/chmod [0-7][0-7][0-5] /home/*, \
+        /usr/bin/chmod [0-7][0-7][0-5] /home/*, \
+	/bin/chmod -R [0-7][0-7][0-5] /tmp/*, \
+        /usr/bin/chmod -R [0-7][0-7][0-5] /tmp/*, \
+        /bin/chmod [0-7][0-7][0-5] /tmp/*, \
+        /usr/bin/chmod [0-7][0-7][0-5] /tmp/*, \		
+	/home/cyadmul1/iam_extract_global.ksh, \
+	/usr/bin/mkgroup, \
+	/usr/sbin/rmgroup, \
+	/usr/sbin/groupadd, \
+	/usr/bin/mailx, \
+	/usr/sbin/chpasswd, \
+	/bin/chown cyadmul1 /home/cyadmul1/*, \
+	/bin/chown -R cyadmul1 /home/cyadmul1/*, \
+	/var/opt/BESClient/oracledb/iam_oracle_extract.ksh
+# NOTE : for script  /home/cyadmul1/iam_extract_global.ksh , there is dependency for L1 Team. This script is provided by Global Compliance Team and copied at the particulari
+# location  /home/cyadmul1/. From here, the script is copied to different servers and executed by L1 to extract data. This script by default is required to be executed i
+# with sudo privilege and so the output is generated ownership root in the home directory of L1 ID. Thereafter the	ownership of output is changed to cyadmul1 and 
+# shared the same with SSO compliance team. So L1 team needs sudo access for "chown" for their own home directory.i
+#
+# Assigned To group
+#IBM_yourAppName_BAU  yourAppName_HOSTS = IBM_yourAppName_BAU_CMDS			
+IBM_UL1_BAU ALL=(root) NOPASSWD:IBM_CL1_BAU_CMDS, NOEXEC: !IBM_SHELLESCAPE_ALL
+
+
+# End AIRTEL UNIX-ADMIN Ver 1.0  Date yyyy-mm-dd * Maintenance * Refer xxxxx-unapproved- End #
+

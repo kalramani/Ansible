@@ -1,0 +1,10 @@
+---
+- name: post scripts execution via root
+  hosts: oracle
+  become: True
+  tasks:
+    - name: execute script1
+      shell: "/u01/app/oraInventory/orainstRoot.sh"
+    
+    - name: execute script2
+      shell: "/u01/app/grid/product/12.1.0/grid/root.sh"

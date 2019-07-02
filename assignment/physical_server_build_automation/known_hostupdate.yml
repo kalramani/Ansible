@@ -1,0 +1,12 @@
+---
+- name: update the knownhostfile
+  hosts: tower
+  gather_facts: no
+  tasks:
+    - name: update knowhostfile
+      known_hosts:
+        path: /home/decoy/.ssh/known_hosts
+        name: 10.14.245.30
+        state: absent
+    
+ 

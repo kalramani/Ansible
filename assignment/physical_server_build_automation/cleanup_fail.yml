@@ -1,0 +1,21 @@
+---
+- name: Master play
+  gather_facts: no
+  hosts: fileserver
+  vars:
+    iso_to_pick: "{{ OSVER }}.iso"
+  tasks:
+    - name: unmount after copying it
+      mount:
+        path: /data/isomount
+        src: /data/{{ iso_to_pick }}
+        state: absent
+        fstype: "iso9660"
+
+    - name: clean dirs
+      file: 
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /data/isomount
+        - /data/isodata

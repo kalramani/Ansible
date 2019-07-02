@@ -1,0 +1,1 @@
+{{ oracle_weblogic_user }} ALL=(root) NOPASSWD:/usr/bin/systemctl status weblogic, /usr/bin/systemctl stop weblogic, /usr/bin/systemctl start weblogic, /usr/bin/systemctl status nodemanager, /usr/bin/systemctl stop nodemanager, /usr/bin/systemctl start nodemanager 

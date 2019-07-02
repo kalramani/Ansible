@@ -1,0 +1,13 @@
+---
+- name: Install NTP
+  yum: name=ntp state=present
+
+- name: Config /etc/ntp.conf
+  template: src=hardening/ntp.conf
+        dest=/etc/ntp.conf
+        owner=root
+        group=root
+        mode=0644
+  notify:
+    Restart NTP
+

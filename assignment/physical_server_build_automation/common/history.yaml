@@ -1,0 +1,12 @@
+---
+#******************************************************************************
+# Role: linux-hardening
+# File: tasks/account_settings.yml
+#******************************************************************************
+- name: Set Password Expiration Days
+  lineinfile:
+    dest: '/etc/bashrc'
+    regexp: "^export HISTTIMEFORMAT"
+    line: 'export HISTTIMEFORMAT="%H:%M:%S %Y-%m-%d "'
+    state: present
+

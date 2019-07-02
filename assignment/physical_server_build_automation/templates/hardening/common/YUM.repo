@@ -1,0 +1,5 @@
+[YUM]
+name=yum_client
+baseurl=http://10.5.200.155/rhel{{ ansible_distribution_version }}
+enabled=1
+gpgcheck=0

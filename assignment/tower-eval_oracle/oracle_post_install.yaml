@@ -1,0 +1,8 @@
+---
+- name: post scripts execution via root
+  hosts: oracle
+  become: True
+  tasks:
+    - name: execute script1
+      shell: "/u02/app/oracle/product/12.1.0/dbhome_1/root.sh"
+    

@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  author: Amit Sharma
+  description: Creates Users
+
+  platforms:
+  - name: EL
+    versions:
+    - all
+  - name: RHEL
+    versions:
+    - RHEL7

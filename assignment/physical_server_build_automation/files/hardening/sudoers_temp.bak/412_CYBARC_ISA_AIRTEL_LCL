@@ -1,0 +1,47 @@
+# Begin  AIRTEL RECONCILATION_CYBERARC_TOOL standard template Ver 1.0 Date 2016-09-20  #
+# Description : RECONCILATION_CYBERARC_TOOL   USER_ID : cyreconu 
+#
+# Software products and versions
+# Supported OS platforms - 
+# local functional ID
+# local path changes
+# local OS groups for the Master
+# self serve access permitted for all sub templates 
+#
+# Version control
+# V1.0 - shortname@us.ibm.com - put your shortname and  correct country code
+#          plus any comments you want included into the sudoers file.
+#
+# 
+# <:NA notes- rename this file to your application name, ensure you keep it a
+#      'pure' unix text file, otherwise it may not work right when #included.
+#      Recommend use of VIM to edit:  
+#      Reminder when replacing 'yourAppName' below, use all CAPS, that is 
+#      syntatically required by sudo. >
+#
+#=====================================================================================
+#
+# Replace sample group names with real group names for your account
+# 
+
+User_Alias      IBM_CYARC_BAU = cyreconu 
+#User_Alias      IBM_yourAppName_ADM = %admgrp # Use only if you have a 'type B'
+                    # sudo entry, otherwise delete.  If used, it MUST be a 
+                    # different group then used for the IBM_*_BAU entry, and 
+                    # will normally be empty.  ID Admin will populate this
+                    # group during change windows/problem event, then empty
+                    # the group when the event is complete.
+
+#Host_Alias	yourAppName_HOSTS = ALL # in this case, we want this defined on all hosts, indicate subsets as appropriate.
+#
+# -----Do not change anything below this line, excepting to replace ----------
+# -----         <:path *> content with local pathing.       ------------------
+#
+#Cmnd_Alias IBM_CYARC_BAU_CMDS = \
+
+
+# Assigned To group
+#IBM_yourAppName_BAU  yourAppName_HOSTS = IBM_yourAppName_BAU_CMDS		
+IBM_CYARC_BAU ALL=(root) NOPASSWD : ALL, !IBM_SHELLS_ALL, NOEXEC: !IBM_SHELLESCAPE_ALL, !SUDOSUDO, !IBM_NONE_SA
+
+# End  AIRTEL RECONCILATION_CYBERARC_TOOL standard template Ver 1.0 Date yyyy-mm-dd    * Master * Refer xxxxx-unapproved- End #
